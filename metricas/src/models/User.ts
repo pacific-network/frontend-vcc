@@ -16,3 +16,4 @@ export interface GetUsersWithPagination {
     data: IUser[];
     meta: PaginationMetaData
 }
+

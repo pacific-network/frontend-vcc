@@ -1,5 +1,5 @@
-import { Home, BarChart2, Upload, Users, Folder, Settings, User2, ChevronUp, ChartNoAxesCombined, AudioWaveform } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Home, BarChart2, Upload, Folder, Settings, User2, ChevronUp, ChartNoAxesCombined, AudioWaveform, UserRoundCog, Handshake } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
     Sidebar,
     SidebarContent,
@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 
+
 const menuItems = [
     {
         title: "Inicio",
@@ -39,27 +40,26 @@ const menuItems = [
         icon: AudioWaveform,
         subMenu: [
             { title: "Estudios", url: "/estudios", icon: Folder },
-            { title: "Clientes", url: "/clientes", icon: Users },
+            { title: "Clientes", url: "/clientes", icon: Handshake },
         ],
     },
     {
         title: "Administrador",
         icon: Settings,
         subMenu: [
-            { title: "Usuarios", url: "/users", icon: Settings },
-            { title: "Roles", url: "/roles", icon: Settings },
+            { title: "Usuarios", url: "/users", icon: UserRoundCog },
         ],
     }
 ];
 
 export function AppSidebar() {
-    const navigate = useNavigate();
+
 
     return (
         <Sidebar className="bg-gray-800 text-black w-64 h-full flex flex-col">
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-lg font-semibold text-black mb-4">Vértice</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-lg font-semibold text-black mb-4">Vértice Contact Center</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {menuItems.map((item) => (
@@ -85,14 +85,7 @@ export function AppSidebar() {
                                                                         </Link>
                                                                     </SidebarMenuButton>
                                                                 </DropdownMenuTrigger>
-                                                                <DropdownMenuContent side="top" className="w-[--radix-popper-anchor-width]">
-                                                                    <DropdownMenuItem>
-                                                                        <span>Opción adicional 1</span>
-                                                                    </DropdownMenuItem>
-                                                                    <DropdownMenuItem>
-                                                                        <span>Opción adicional 2</span>
-                                                                    </DropdownMenuItem>
-                                                                </DropdownMenuContent>
+
                                                             </DropdownMenu>
                                                         </SidebarMenuSubItem>
                                                     ))}
@@ -115,7 +108,7 @@ export function AppSidebar() {
                             <DropdownMenuTrigger asChild>
                                 <SidebarMenuButton className="w-full flex items-center justify-between p-3 text-sm text-black hover:text-gray">
                                     <User2 className="w-5 h-5 mr-3" />
-                                    Username
+                                    Mi Perfil
                                     <ChevronUp className="ml-auto" />
                                 </SidebarMenuButton>
                             </DropdownMenuTrigger>

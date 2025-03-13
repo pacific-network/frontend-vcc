@@ -3,44 +3,39 @@ import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
+import { UseQueryGetUsers } from "@/queries/userQueries";
+import CustomHeader from "./custom-header";
+import { Separator } from "@radix-ui/react-separator";
 
-
-const users = [
-    { id: 1, name: "Juan Pérez", email: "juan@example.com", role: "Admin" },
-    { id: 2, name: "María López", email: "maria@example.com", role: "User" },
-    { id: 3, name: "Carlos Gómez", email: "carlos@example.com", role: "Editor" },
-    { id: 4, name: "Ana Rodríguez", email: "ana@example.com", role: "User" },
-    { id: 5, name: "Luis Fernández", email: "luis@example.com", role: "Admin" },
-];
-
-const ITEMS_PER_PAGE = 3;
 
 const TableUser: FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
+    const pageSize = 5;
+    const { data } = UseQueryGetUsers(currentPage, pageSize);
 
-    const paginatedUsers = users.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+    // Acceder a los usuarios dentro de data.data
+    const users = data?.data || [];
+    const totalPages = data?.meta?.pageCount || 1;
 
     return (
-
-        <div className="w-150 ">
+        <div className="size-full p-10">
+            <CustomHeader title={"Gestion Usuarios"} />
+            <Separator />
             <Table>
                 <TableHeader>
                     <TableRow>
                         <TableHead>ID</TableHead>
                         <TableHead>Nombre</TableHead>
                         <TableHead>Email</TableHead>
-                        <TableHead>Rol</TableHead>
                         <TableHead>Acciones</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {paginatedUsers.map((user) => (
+                    {users.map((user) => (
                         <TableRow key={user.id}>
                             <TableCell>{user.id}</TableCell>
-                            <TableCell>{user.name}</TableCell>
-                            <TableCell>{user.email}</TableCell>
-                            <TableCell>{user.role}</TableCell>
+                            <TableCell>{user.name} {user.lastname}</TableCell>
+                            <TableCell>{user.mail}</TableCell>
                             <TableCell>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -77,7 +72,6 @@ const TableUser: FC = () => {
                 </Button>
             </div>
         </div>
-
     );
 };
 
