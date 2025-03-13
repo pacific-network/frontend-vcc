@@ -6,20 +6,21 @@ import { ChevronDown } from "lucide-react";
 import { UseQueryGetUsers } from "@/queries/userQueries";
 import CustomHeader from "./custom-header";
 import { Separator } from "@radix-ui/react-separator";
+import UserForm from "./create-user";
 
 
 const TableUser: FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 5;
     const { data } = UseQueryGetUsers(currentPage, pageSize);
-
-    // Acceder a los usuarios dentro de data.data
     const users = data?.data || [];
     const totalPages = data?.meta?.pageCount || 1;
 
     return (
         <div className="size-full p-10">
-            <CustomHeader title={"Gestion Usuarios"} />
+            <CustomHeader title={"Gestion Usuarios"} actions={
+                <UserForm />
+            } />
             <Separator />
             <Table>
                 <TableHeader>
