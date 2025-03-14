@@ -36,5 +36,22 @@ export const useMutationCreateUser = () => {
     });
 };
 
+export const useMutationDeleteUserById = () => {
+    const queryClient = useQueryClient();
+    return (
+        useMutation({
+            mutationFn: async (id: number) => {
+                const res = await userService.deleteUserById(id);
+                if (res.status === 200) {
+                    return res.data;
+                }
+                throw new Error('Error al eliminar el usuario');
+            },
+            onSuccess: async () => {
+                queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_USERS] });
+            },
+            ...queriesConfig
 
-// export const UseMutationDeleteUserById = () => 
+        })
+    )
+}

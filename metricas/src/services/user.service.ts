@@ -18,6 +18,10 @@ class UserService {
     public async createUser(user: IUser) {
         return this.restApiService.post<IUser>('/users', user);
     }
+
+    public async deleteUserById(id: number) {
+        return this.restApiService.delete<IUser>(`/users/${id}`);
+    }
 }
 
 export default new UserService();
