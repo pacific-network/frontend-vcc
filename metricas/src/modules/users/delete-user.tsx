@@ -1,17 +1,23 @@
+
 import { useMutationDeleteUserById } from "@/queries/userQueries";
 import ConfirmDialog from "@/components/confirm-dialog";
 
-export function DeleteUser({ userId, onUserDeleted }) {
+interface DeleteUserProps {
+    userId: number;
+    onUserDeleted: () => void;
+}
+
+export function DeleteUser({ userId, onUserDeleted }: DeleteUserProps) {
     const mutation = useMutationDeleteUserById({
         onSuccess: () => {
-            onUserDeleted();
+            onUserDeleted(); // Refresca la tabla después de eliminar
         },
-        onError: (error) => {
+        onError: (error: any) => {
             console.error("Error eliminando usuario:", error);
         },
     });
 
-    const handleDelete = () => {
+    const handleConfirmDelete = () => {
         mutation.mutate(userId);
     };
 
@@ -19,7 +25,7 @@ export function DeleteUser({ userId, onUserDeleted }) {
         <ConfirmDialog
             title="Eliminar Usuario"
             description="¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer."
-            onConfirm={handleDelete}
+            onConfirm={handleConfirmDelete}
             triggerLabel="Eliminar Usuario"
             confirmLabel="Eliminar"
             cancelLabel="Cancelar"

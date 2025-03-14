@@ -12,9 +12,17 @@ interface ConfirmDialogProps {
     variant?: "destructive" | "link" | "default" | "outline" | "secondary" | "ghost";
 }
 
-export function ConfirmDialog({ title, description, onConfirm, triggerLabel, confirmLabel = "Confirmar", cancelLabel = "Cancelar", variant = "destructive" }: ConfirmDialogProps) {
+export function ConfirmDialog({
+    title,
+    description,
+    onConfirm,
+    triggerLabel,
+    confirmLabel = "Confirmar",
+    cancelLabel = "Cancelar",
+    variant = "destructive"
+}: ConfirmDialogProps) {
     const [open, setOpen] = useState(false);
-                <Button variant={variant || "default"}>{triggerLabel}</Button>
+
     const handleConfirm = () => {
         onConfirm();
         setOpen(false);
@@ -22,8 +30,10 @@ export function ConfirmDialog({ title, description, onConfirm, triggerLabel, con
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger>
-                <Button variant={variant || "default"}>{triggerLabel}</Button>
+            <DialogTrigger asChild>
+                <Button variant={variant} onClick={() => setOpen(true)}>
+                    {triggerLabel}
+                </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
