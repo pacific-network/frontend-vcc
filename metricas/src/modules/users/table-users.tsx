@@ -4,7 +4,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { UseQueryGetUsers } from "@/queries/userQueries";
-import CustomHeader from "./custom-header";
+import CustomHeader from "../../components/custom-header";
 import { Separator } from "@radix-ui/react-separator";
 import UserForm from "./create-user";
 
@@ -26,7 +26,7 @@ const TableUser: FC = () => {
                 <TableHeader>
                     <TableRow>
                         <TableHead>ID</TableHead>
-                        <TableHead>Nombre</TableHead>
+                        <TableHead>Nombre Completo</TableHead>
                         <TableHead>Email</TableHead>
                         <TableHead>Acciones</TableHead>
                     </TableRow>

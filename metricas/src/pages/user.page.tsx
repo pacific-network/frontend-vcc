@@ -1,7 +1,7 @@
 import React from 'react';
 import Layout from './layout.page';
 
-import TableUser from '@/components/table-users';
+import TableUser from '@/modules/users/table-users';
 
 const Users: React.FC = () => {
     return (

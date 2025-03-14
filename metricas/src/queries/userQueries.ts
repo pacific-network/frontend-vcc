@@ -35,3 +35,6 @@ export const useMutationCreateUser = () => {
         ...queriesConfig
     });
 };
+
+
+// export const UseMutationDeleteUserById = () => 
