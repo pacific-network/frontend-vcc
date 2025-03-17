@@ -8,24 +8,38 @@ import CustomHeader from "../../components/custom-header";
 import { Separator } from "@radix-ui/react-separator";
 import UserForm from "./create-user";
 import DeleteUser from "./delete-user";
+import UpdateUser from "./update-user";
 
 const TableUser: FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null); // Estado para el usuario a eliminar
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false); // Estado para el diálogo de eliminación
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false); // Estado para el diálogo de actualización
     const pageSize = 5;
     const { data, refetch } = UseQueryGetUsers(currentPage, pageSize);
     const users = data?.data || [];
     const totalPages = data?.meta?.pageCount || 1;
 
-    // Función para abrir el diálogo de eliminación
     const handleDeleteClick = (userId: number) => {
         setSelectedUserId(userId);
+        setIsDeleteOpen(true); // Abre el diálogo de confirmación
     };
 
-    // Función para actualizar la tabla tras eliminación
+    const handleUpdateClick = (userId: number) => {
+        setSelectedUserId(userId);
+        setIsUpdateOpen(true); // Abre el diálogo de actualización
+    };
+
     const handleUserDeleted = () => {
         refetch();
         setSelectedUserId(null);
+        setIsDeleteOpen(false); // Cierra el diálogo después de eliminar
+    };
+
+    const handleUserUpdated = () => {
+        refetch();
+        setSelectedUserId(null);
+        setIsUpdateOpen(false); // Cierra el diálogo después de actualizar
     };
 
     return (
@@ -55,7 +69,7 @@ const TableUser: FC = () => {
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Editar</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleUpdateClick(user.id)}>Editar</DropdownMenuItem>
                                         <DropdownMenuItem
                                             className="text-red-500"
                                             onClick={() => handleDeleteClick(user.id)}
@@ -89,8 +103,23 @@ const TableUser: FC = () => {
             </div>
 
             {/* Dialog para eliminar usuario */}
-            {selectedUserId !== null && (
-                <DeleteUser userId={selectedUserId} onUserDeleted={handleUserDeleted} />
+            {selectedUserId !== null && isDeleteOpen && (
+                <DeleteUser
+                    userId={selectedUserId}
+                    onUserDeleted={handleUserDeleted}
+                    isOpen={isDeleteOpen}
+                    setIsOpen={setIsDeleteOpen}
+                />
+            )}
+
+            {/* Dialog para actualizar usuario */}
+            {selectedUserId !== null && isUpdateOpen && (
+                <UpdateUser
+                    userId={selectedUserId}
+                    onUserUpdated={handleUserUpdated}
+                    isOpen={isUpdateOpen}
+                    setIsOpen={setIsUpdateOpen}
+                />
             )}
         </div>
     );

@@ -36,6 +36,7 @@ export const useMutationCreateUser = () => {
     });
 };
 
+
 export const useMutationDeleteUserById = () => {
     const queryClient = useQueryClient();
     return (
@@ -55,3 +56,41 @@ export const useMutationDeleteUserById = () => {
         })
     )
 }
+
+
+export const useQueryGetUserById = (id: number) => {
+    return useQuery({
+        queryKey: [QueryKeys.GET_USER_BY_ID],
+        queryFn: async () => {
+            const res = await userService.getUserById(id);
+            if (res.status === 200) {
+                return res.data;
+            }
+            throw new Error('Error al obtener el usuario');
+        },
+        ...queriesConfig
+    });
+};
+
+
+export const useMutationUpdateUser = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (user: IUser) => {
+            if (!user.id) {
+                throw new Error("User ID is required");
+            }
+
+            const res = await userService.updateUser(user.id, user);
+            if (res.status === 200) {
+                return res.data;
+            }
+            throw new Error('Error al actualizar el usuario');
+        },
+        onSuccess: async () => {
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_USERS] });
+        },
+        ...queriesConfig
+    });
+};

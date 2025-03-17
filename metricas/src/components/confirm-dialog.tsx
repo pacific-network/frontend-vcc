@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { useState } from "react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface ConfirmDialogProps {
     title: string;
@@ -10,31 +9,27 @@ interface ConfirmDialogProps {
     confirmLabel?: string;
     cancelLabel?: string;
     variant?: "destructive" | "link" | "default" | "outline" | "secondary" | "ghost";
+    isOpen: boolean;
+    setIsOpen: (open: boolean) => void;
 }
 
 export function ConfirmDialog({
     title,
     description,
     onConfirm,
-    triggerLabel,
     confirmLabel = "Confirmar",
     cancelLabel = "Cancelar",
-    variant = "destructive"
+    variant = "destructive",
+    isOpen,
+    setIsOpen
 }: ConfirmDialogProps) {
-    const [open, setOpen] = useState(false);
-
     const handleConfirm = () => {
         onConfirm();
-        setOpen(false);
+        setIsOpen(false);
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant={variant} onClick={() => setOpen(true)}>
-                    {triggerLabel}
-                </Button>
-            </DialogTrigger>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
@@ -42,7 +37,7 @@ export function ConfirmDialog({
                 </DialogHeader>
                 <div className="flex justify-center gap-4 mt-4">
                     <Button onClick={handleConfirm} variant={variant}>{confirmLabel}</Button>
-                    <Button onClick={() => setOpen(false)} variant="secondary">{cancelLabel}</Button>
+                    <Button onClick={() => setIsOpen(false)} variant="secondary">{cancelLabel}</Button>
                 </div>
             </DialogContent>
         </Dialog>

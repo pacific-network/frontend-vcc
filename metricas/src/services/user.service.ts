@@ -22,6 +22,14 @@ class UserService {
     public async deleteUserById(id: number) {
         return this.restApiService.delete<IUser>(`/users/${id}`);
     }
+
+    public async updateUser(id: number, user: Partial<IUser>) {
+        return this.restApiService.patch<IUser>(`/users/${id}`, user);
+    }
+
+    public async getUserById(id: number) {
+        return this.restApiService.get<IUser>(`/users/${id}`);
+    }
 }
 
 export default new UserService();
