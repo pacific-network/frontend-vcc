@@ -24,7 +24,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 const menuItems = [
     {
         title: "Inicio",
-        url: "/",
+        url: "/homeAdmin",
         icon: Home,
     },
     {
@@ -32,7 +32,7 @@ const menuItems = [
         icon: ChartNoAxesCombined,
         subMenu: [
             { title: "Ver estadísticas", url: "/estadisticas", icon: BarChart2 },
-            { title: "Cargar reporte", url: "/cargar-reporte", icon: Upload },
+            { title: "Cargar reporte", url: "/report", icon: Upload },
         ],
     },
     {

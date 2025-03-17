@@ -10,6 +10,7 @@ import PrivateRoute from "./components/private-route.tsx";
 import HomeAdmin from "./pages/homeAdmin.page.tsx";
 import { Toaster } from "sonner";
 import Users from "./pages/user.page.tsx";
+import Report from "./pages/report.page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<App />} />
             <Route path="/homeAdmin" element={<PrivateRoute><HomeAdmin /></PrivateRoute>} />
-            <Route path="/users" element={<PrivateRoute><Users/></PrivateRoute>} />
+            <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
+            <Route path="/report" element={<PrivateRoute><Report /></PrivateRoute>} />
+
 
           </Routes>
         </Router>
