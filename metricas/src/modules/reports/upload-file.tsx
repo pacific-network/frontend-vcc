@@ -42,7 +42,7 @@ const FileUpload = () => {
 
     return (
         <div className="size-full p-10">
-            <Card className="max-w-md mx-auto p-6 shadow-lg rounded-2xl">
+            <Card className="max-w-4xl mx-auto p-6 shadow-lg rounded-2xl">
                 <CardHeader>
                     <CardTitle className="text-center text-xl font-semibold">Subir Archivo Excel</CardTitle>
                 </CardHeader>

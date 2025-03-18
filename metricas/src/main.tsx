@@ -11,6 +11,7 @@ import HomeAdmin from "./pages/homeAdmin.page.tsx";
 import { Toaster } from "sonner";
 import Users from "./pages/user.page.tsx";
 import Report from "./pages/report.page.tsx";
+import ListReport from "./pages/report-table.page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/homeAdmin" element={<PrivateRoute><HomeAdmin /></PrivateRoute>} />
             <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
             <Route path="/report" element={<PrivateRoute><Report /></PrivateRoute>} />
+            <Route path="/list" element={<PrivateRoute><ListReport /></PrivateRoute>} />
 
 
           </Routes>

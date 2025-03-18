@@ -31,18 +31,18 @@ const menuItems = [
         title: "Métricas",
         icon: ChartNoAxesCombined,
         subMenu: [
-            { title: "Ver estadísticas", url: "/estadisticas", icon: BarChart2 },
+            { title: "Ver estadísticas", url: "/list", icon: BarChart2 },
             { title: "Cargar reporte", url: "/report", icon: Upload },
         ],
     },
-    {
-        title: "Calidad",
-        icon: AudioWaveform,
-        subMenu: [
-            { title: "Estudios", url: "/estudios", icon: Folder },
-            { title: "Clientes", url: "/clientes", icon: Handshake },
-        ],
-    },
+    // {
+    //     title: "Calidad",
+    //     icon: AudioWaveform,
+    //     subMenu: [
+    //         { title: "Estudios", url: "/estudios", icon: Folder },
+    //         { title: "Clientes", url: "/clientes", icon: Handshake },
+    //     ],
+    // },
     {
         title: "Administrador",
         icon: Settings,
