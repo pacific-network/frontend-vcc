@@ -1,130 +1,70 @@
-import { FC, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { CloudUploadIcon } from "@heroicons/react/outline";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { UploadCloud } from "lucide-react";
 import { useMutationUploadFile } from "@/queries/fileQueries";
+import { toast } from "sonner"; // Importa el toast de sonner
 
-const FileUpload: FC = () => {
-
-    const [study, setStudyCode] = useState("");
+const FileUpload = () => {
+    const [file, setFile] = useState<File | null>(null);
+    const [study, setStudy] = useState("");
     const [client, setClient] = useState("");
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
     const mutation = useMutationUploadFile();
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files ? e.target.files[0] : null;
-        if (file) {
-            setSelectedFile(file);
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0] || null;
+        setFile(selectedFile);
+    };
+
+    const handleUpload = async () => {
+        if (!file) {
+            alert("Selecciona un archivo antes de subirlo.");
+            return;
         }
-    };
 
-    const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        const file = e.dataTransfer.files ? e.dataTransfer.files[0] : null;
-        if (file) {
-            setSelectedFile(file);
+        const payload = {
+            file: file,
+            study: study,
+            client: client,
+        };
+
+        console.log("Payload:", payload); // ✅ Verifica que el objeto tiene las propiedades correctas
+
+        try {
+            await mutation.mutateAsync(payload);
+            toast.success("El archivo fue subido exitosamente."); // Muestra el mensaje de éxito
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            toast.error("Hubo un error al subir el archivo."); // Muestra un mensaje de error en caso de fallo
         }
-    };
-
-    const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-        e.preventDefault(); // Impide que el navegador maneje el evento y permita la carga del archivo
-    };
-
-    const handleUpload = () => {
-        if (!selectedFile || !study.trim() || !client.trim()) return;
-
-        const formData = new FormData();
-
-        formData.append("study", study);
-        formData.append("client", client);
-        formData.append("file", selectedFile);
-
-        mutation.mutate(formData, {
-            onSuccess: (data) => {
-                console.log("Archivo subido exitosamente", data);
-                setSelectedFile(null);
-                setStudyCode("");
-                setClient("");
-            },
-            onError: (error) => {
-                console.error("Error al subir el archivo", error);
-            },
-        });
     };
 
     return (
         <div className="size-full p-10">
-            {/* Inputs para "study" y "client" */}
-            <div className="space-y-6 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 shadow-sm">
-                <Input
-                    type="text"
-                    placeholder="Ingresa nombre / código de estudio"
-                    value={study}
-                    onChange={(e) => setStudyCode(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                />
-
-                <Input
-                    type="text"
-                    placeholder="Ingresa cliente"
-                    value={client}
-                    onChange={(e) => setClient(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md"
-                />
-            </div>
-
-            {/* Sección de carga de archivos */}
-            <div
-                className="space-y-6 p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 shadow-sm"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                style={{ cursor: "pointer" }} // Cambia el cursor para indicar que es una zona de carga
-            >
-                <div className="text-center">
-                    <CloudUploadIcon className="w-12 h-12 mx-auto text-gray-500 mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Cargar un archivo</h3>
-                    <p className="text-sm text-gray-500 mb-4">Arrastra y suelta un archivo aquí o selecciona uno (JPG, PNG, PDF, Excel)</p>
-                </div>
-
-                {/* Input oculto */}
-                <input
-                    type="file"
-                    id="file-upload-input"
-                    onChange={handleFileChange}
-                    accept=".csv,.xls,.xlsx"
-
-                />
-
-                {/* Label que activa el input file */}
-                <label htmlFor="file-upload-input">
-                    <Button variant="outline" className="w-full">
-                        Seleccionar archivo
+            <Card className="max-w-md mx-auto p-6 shadow-lg rounded-2xl">
+                <CardHeader>
+                    <CardTitle className="text-center text-xl font-semibold">Subir Archivo Excel</CardTitle>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-4">
+                    <Input
+                        type="text"
+                        placeholder="Estudio"
+                        value={study}
+                        onChange={(e) => setStudy(e.target.value)}
+                    />
+                    <Input
+                        type="text"
+                        placeholder="Cliente"
+                        value={client}
+                        onChange={(e) => setClient(e.target.value)}
+                    />
+                    <Input type="file" accept=".xlsx,.xls" onChange={handleFileChange} />
+                    <Button onClick={handleUpload} className="w-full flex items-center gap-2">
+                        <UploadCloud className="w-5 h-5" /> Subir Archivo
                     </Button>
-                </label>
-
-                {selectedFile && (
-                    <div className="mt-4 flex justify-between items-center bg-white p-2 rounded-lg shadow-sm">
-                        <span className="text-sm font-medium text-gray-700 truncate">{selectedFile.name}</span>
-                        <Button
-                            variant="outline"
-                            onClick={handleUpload}
-                            className="ml-4 px-4 py-2 text-sm"
-                            disabled={mutation.isPending}
-                        >
-                            {mutation.isPending ? "Subiendo..." : "Subir"}
-                        </Button>
-                    </div>
-                )}
-
-                {mutation.isError && (
-                    <p className="text-red-500 text-sm mt-2">Error al subir el archivo</p>
-                )}
-
-                {mutation.isSuccess && (
-                    <p className="text-green-500 text-sm mt-2">Archivo subido exitosamente</p>
-                )}
-            </div>
+                </CardContent>
+            </Card>
         </div>
     );
 };

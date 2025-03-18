@@ -1,5 +1,6 @@
 import { AxiosInstance } from "axios";
 import { RestApiService } from "./restApi.service";
+import { File } from "@/models/File";
 
 class FileService {
     restApiService: AxiosInstance;

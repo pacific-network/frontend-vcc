@@ -33,7 +33,7 @@ export const useMutationUploadFile = () => {
             throw new Error('Error al cargar archivo');
         },
         onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: [QueryKeys.UPLOAD_FILE] });
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_FILES] });
         },
         ...queriesConfig
     });
