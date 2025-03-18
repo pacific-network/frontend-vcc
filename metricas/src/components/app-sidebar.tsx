@@ -1,4 +1,4 @@
-import { Home, BarChart2, Upload, Folder, Settings, User2, ChevronUp, ChartNoAxesCombined, AudioWaveform, UserRoundCog, Handshake } from "lucide-react";
+import { Home, BarChart2, Upload, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, AudioWaveform, UserRoundCog, Handshake } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     Sidebar,
@@ -28,21 +28,14 @@ const menuItems = [
         icon: Home,
     },
     {
-        title: "Métricas",
+        title: "Estudios",
         icon: ChartNoAxesCombined,
         subMenu: [
-            { title: "Ver estadísticas", url: "/list", icon: BarChart2 },
+            { title: "Crear Estudio", url: '/', icon: BookPlus },
+            { title: "Ver Estudios", url: "/list", icon: BarChart2 },
             { title: "Cargar reporte", url: "/report", icon: Upload },
         ],
     },
-    // {
-    //     title: "Calidad",
-    //     icon: AudioWaveform,
-    //     subMenu: [
-    //         { title: "Estudios", url: "/estudios", icon: Folder },
-    //         { title: "Clientes", url: "/clientes", icon: Handshake },
-    //     ],
-    // },
     {
         title: "Administrador",
         icon: Settings,

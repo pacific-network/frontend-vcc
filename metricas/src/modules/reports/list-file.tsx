@@ -1,5 +1,5 @@
 import CustomHeader from '@/components/custom-header';
-import { Separator } from '@radix-ui/react-separator';
+
 import React from 'react';
 
 const ListFiles: React.FC = () => {
