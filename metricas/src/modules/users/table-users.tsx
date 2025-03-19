@@ -24,7 +24,7 @@ const TableUser: FC = () => {
         setSelectedUserId(userId);
         setIsDeleteOpen(true); // Abre el diálogo de confirmación
     };
-
+ 
     const handleUpdateClick = (userId: number) => {
         setSelectedUserId(userId);
         setIsUpdateOpen(true); // Abre el diálogo de actualización

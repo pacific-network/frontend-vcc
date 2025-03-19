@@ -19,7 +19,7 @@ export const UseQueryGetUsers = (page: number, take: number) => {
 };
 
 
-export const useMutationCreateUser = () => {
+export const useMutationCreateUser = (p0: { onSuccess: () => void; onError: (error: any) => void; }) => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (user: IUser) => {

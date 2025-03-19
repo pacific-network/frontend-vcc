@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useMutationCreateUser } from "@/queries/userQueries";
 import { z } from "zod";
 import { useState } from "react";
+import { toast } from "sonner";
 
 
 const userSchema = z.object({
@@ -35,7 +36,7 @@ export function UserForm() {
 
     const mutation = useMutationCreateUser({
         onSuccess: () => {
-            setOpen(false);
+            setOpen(false);  // Cierra el diálogo cuando se crea el usuario
             setUser({
                 username: "",
                 password: "",
@@ -44,8 +45,9 @@ export function UserForm() {
                 mail: "",
                 role_id: 1,
                 status_id: 1,
-            });
-            setErrors({});
+            });  // Limpia los campos del formulario
+            toast("Usuario creado exitosamente");
+            setErrors({});  // Limpia los errores
         },
         onError: (error) => {
             console.error("Error creando usuario:", error);
@@ -72,11 +74,11 @@ export function UserForm() {
             return;
         }
         setErrors({});
-        mutation.mutate(user);
+        mutation.mutate(user);  // Llama a la mutación
     };
 
     const handleCancel = () => {
-        setOpen(false);
+        setOpen(false);  // Cierra el diálogo si el usuario cancela
     };
 
     return (

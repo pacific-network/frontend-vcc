@@ -1,4 +1,4 @@
-import { Home, BarChart2, Upload, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, AudioWaveform, UserRoundCog, Handshake } from "lucide-react";
+import { Home, BarChart2, Upload, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     Sidebar,
@@ -41,6 +41,7 @@ const menuItems = [
         icon: Settings,
         subMenu: [
             { title: "Usuarios", url: "/users", icon: UserRoundCog },
+            { title: "Clientes", url: "/users", icon: Handshake },
         ],
     }
 ];
