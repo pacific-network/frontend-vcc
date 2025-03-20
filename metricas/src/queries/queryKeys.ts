@@ -9,4 +9,8 @@ export enum QueryKeys {
     //File
     GET_ALL_FILES = 'GET_ALL_FILES',
     UPLOAD_FILE = 'UPLOAD_FILE',
+
+    //Clients
+    GET_ALL_CLIENTS = 'GET_ALL_CLIENTS',
+    GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES'
 }

@@ -41,7 +41,7 @@ const menuItems = [
         icon: Settings,
         subMenu: [
             { title: "Usuarios", url: "/users", icon: UserRoundCog },
-            { title: "Clientes", url: "/users", icon: Handshake },
+            { title: "Clientes", url: "/client-list", icon: Handshake },
         ],
     }
 ];
