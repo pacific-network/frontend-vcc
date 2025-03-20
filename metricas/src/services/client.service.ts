@@ -23,4 +23,8 @@ class ClientService {
         return this.restApiService.post<IClient>('/clients', client);
     }
 
+    public async getClientCategories() {
+        return this.restApiService.get("categories");
+    }
+
 } export default new ClientService();
