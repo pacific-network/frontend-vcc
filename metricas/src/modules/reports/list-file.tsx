@@ -4,7 +4,7 @@ import { UseQueryGetStudies } from '@/queries/studyQueries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button'; // Asegúrate de importar el componente Button
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-
+import CreateStudyForm from '../studies/create-study';
 
 const ListStudies: React.FC = () => {
     const [page, setPage] = useState(1); // Estado para la página actual
