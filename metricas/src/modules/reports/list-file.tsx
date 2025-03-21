@@ -1,46 +1,109 @@
+import React, { useState } from 'react';
 import CustomHeader from '@/components/custom-header';
+import { UseQueryGetStudies } from '@/queries/studyQueries';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button'; // Asegúrate de importar el componente Button
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 
-import React from 'react';
 
-const ListFiles: React.FC = () => {
+const ListStudies: React.FC = () => {
+    const [page, setPage] = useState(1); // Estado para la página actual
+    const { data: studiesData, isLoading } = UseQueryGetStudies(page, 10);
+
     const columns = [
         'Id',
-        'Codigo',
-        'Fecha Creacion',
-        'Cliente',
         'Estudio',
-        'Detalle'
+        'Cliente',
+        'Estado',
+        'Fecha Inicio',
+        'Fecha Termino',
+
     ];
 
+    // Función para manejar el cambio de página
+    const handlePageChange = (newPage: number) => {
+        if (newPage > 0 && newPage <= studiesData?.meta.pageCount) {
+            setPage(newPage);
+        }
+    };
+
+    const handleViewDetail = (studyId: number) => {
+        // Aquí podrías redirigir a otra página o abrir un modal para mostrar más detalles
+        console.log('Ver detalles del estudio con id:', studyId);
+    };
+
     return (
+        <div className='size-full p-10'>
+            <CustomHeader title="Estudios Activos" />
+            <Card>
+                <CardHeader>
+                    <CardTitle>Listado de Estudios</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                {columns.map((column, index) => (
+                                    <TableHead key={index} className="px-4 py-2 text-left font-semibold border-b">
+                                        {column}
+                                    </TableHead>
+                                ))}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="px-4 py-2 text-center text-gray-500">
+                                        Cargando...
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                studiesData?.data?.map((study) => (
+                                    <TableRow key={study.id} className="border-b">
+                                        <TableCell className="px-4 py-2">{study.id}</TableCell>
+                                        <TableCell className="px-4 py-2">{study.name}</TableCell>
+                                        <TableCell className="px-4 py-2">{study.client}</TableCell>
+                                        <TableCell className="px-4 py-2">{study.progress_stage}</TableCell>
+                                        <TableCell className="px-4 py-2">{new Date(study.start_date).toLocaleDateString()}</TableCell>
+                                        <TableCell className="px-4 py-2">{new Date(study.end_date).toLocaleDateString()}</TableCell>
+                                        <TableCell className="px-4 py-2 text-center">
+                                            <button
+                                                onClick={() => handleViewDetail(study.id)}
+                                                className="text-blue-600 hover:text-blue-800"
+                                            >
+                                                Ver Detalle
+                                            </button>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )}
+                        </TableBody>
+                    </Table>
 
-        <div className="size-full m-8 shadow-md rounded-lg bg-white">
-            <CustomHeader title={'Reportes '} />
-
-            <table className="min-w-full table-auto">
-                <thead className="bg-gray-100 text-gray-700">
-                    <tr>
-                        {columns.map((column, index) => (
-                            <th key={index} className="px-4 py-2 text-left font-semibold">
-                                {column}
-                            </th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {/* Aquí puedes agregar las filas de datos si tienes alguna fuente de datos */}
-                    {/* Ejemplo con una fila vacía por ahora */}
-                    <tr>
-                        {columns.map((_, index) => (
-                            <td key={index} className="px-4 py-2 text-gray-500">
-                                {/* Este es un lugar para mostrar datos */}
-                            </td>
-                        ))}
-                    </tr>
-                </tbody>
-            </table>
+                    {/* Paginación con el diseño solicitado */}
+                    <div className="flex justify-between items-center mt-4">
+                        <Button
+                            variant="outline"
+                            disabled={page === 1}
+                            onClick={() => handlePageChange(page - 1)}
+                        >
+                            Anterior
+                        </Button>
+                        <span>
+                            Página {page} de {studiesData?.meta.pageCount}
+                        </span>
+                        <Button
+                            variant="outline"
+                            disabled={page >= studiesData?.meta.pageCount}
+                            onClick={() => handlePageChange(page + 1)}
+                        >
+                            Siguiente
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
 };
 
-export default ListFiles;
+export default ListStudies;

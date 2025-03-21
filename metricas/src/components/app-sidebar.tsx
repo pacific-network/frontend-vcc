@@ -1,4 +1,4 @@
-import { Home, BarChart2, Upload, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake } from "lucide-react";
+import { DatabaseBackup, Home, BarChart2, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     Sidebar,
@@ -31,9 +31,9 @@ const menuItems = [
         title: "Estudios",
         icon: ChartNoAxesCombined,
         subMenu: [
-            { title: "Crear Estudio", url: '/', icon: BookPlus },
+            { title: "Crear Estudio", url: '/create-study', icon: BookPlus },
             { title: "Ver Estudios", url: "/list", icon: BarChart2 },
-            { title: "Cargar reporte", url: "/report", icon: Upload },
+            { title: "Historico Estudios", url: "/homeAdmin", icon: DatabaseBackup },
         ],
     },
     {

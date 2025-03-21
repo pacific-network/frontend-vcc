@@ -12,5 +12,9 @@ export enum QueryKeys {
 
     //Clients
     GET_ALL_CLIENTS = 'GET_ALL_CLIENTS',
-    GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES'
+    GET_ALL_CATEGORIES = 'GET_ALL_CATEGORIES',
+
+    //Studies
+    GET_ALL_STUDIES = 'GET_ALL_STUDIES',
+    GET_STUDY_BY_ID = 'GET_STUDY_BY_ID',
 }

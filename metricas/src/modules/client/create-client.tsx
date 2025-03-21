@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 const CreateClientForm: React.FC = () => {
     const [open, setOpen] = useState(false);
@@ -27,6 +28,7 @@ const CreateClientForm: React.FC = () => {
                 onSuccess: () => {
                     reset(); // Limpiar formulario después de enviar
                     setOpen(false); // Cerrar modal
+                    toast("Cliente creado existosamente");
                 },
             }
         );
