@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import userService from "../services/user.service";
 import { queriesConfig } from "./config";
 import { QueryKeys } from "./queryKeys";
-import { IUser } from "@/models/User";
+import { CreateUserDto, IUser } from "@/models/User";
 
 export const UseQueryGetUsers = (page: number, take: number) => {
     return useQuery({
@@ -22,8 +22,8 @@ export const UseQueryGetUsers = (page: number, take: number) => {
 export const useMutationCreateUser = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (user: IUser) => {
-            const res = await userService.createUser(user);
+        mutationFn: async (createUser: CreateUserDto) => {
+            const res = await userService.createUser(createUser);
             if (res.status === 201) {
                 return res.data;
             }

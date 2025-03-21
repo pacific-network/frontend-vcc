@@ -3,9 +3,10 @@ import CustomHeader from "@/components/custom-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UseQueryGetClients } from "@/queries/clientQueries";
+import CreateClientForm from "./create-client";
 
 const ClientTable: React.FC = () => {
-    const [page, setPage] = useState(1);
+    const [page] = useState(1);
     const { data: clientData, isLoading, isError } = UseQueryGetClients(page, 8);
 
     if (isLoading) return <p>Cargando clientes...</p>;
@@ -13,7 +14,7 @@ const ClientTable: React.FC = () => {
 
     return (
         <div className="size-full p-10">
-            <CustomHeader title="Listado Clientes" />
+            <CustomHeader title="Listado Clientes" actions={<CreateClientForm />} />
             <Card className="p-4 shadow-md">
                 <CardContent>
                     <Table>

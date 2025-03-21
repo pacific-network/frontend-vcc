@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { RestApiService } from "./restApi.service";
-import { GetUsersWithPagination, IUser } from "@/models/User";
+import { CreateUserDto, GetUsersWithPagination, IUser } from "@/models/User";
+
 
 
 class UserService {
@@ -15,8 +16,8 @@ class UserService {
     }
 
 
-    public async createUser(user: IUser) {
-        return this.restApiService.post<IUser>('/users', user);
+    public async createUser(user: CreateUserDto) {
+        return this.restApiService.post<CreateUserDto>('/users', user);
     }
 
     public async deleteUserById(id: number) {

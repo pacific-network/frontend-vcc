@@ -14,3 +14,10 @@ export interface GetClientWithPagination {
     data: IClient[];
     meta: PaginationMetaData
 }
+
+export interface CreateClientDto{
+    name: string;
+    contactEmail: string;
+    contactPhone: string;
+    category_id: number; 
+}

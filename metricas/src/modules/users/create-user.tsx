@@ -1,14 +1,22 @@
-import * as React from "react";
+import { useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useMutationCreateUser } from "@/queries/userQueries";
+import { toast } from "sonner";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useMutationCreateUser } from "@/queries/userQueries";
-import { z } from "zod";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-
+// Validación del formulario con Zod
 const userSchema = z.object({
     username: z.string().min(3, "El nombre de usuario debe tener al menos 3 caracteres"),
     password: z.string().min(6, "La contraseña debe tener al menos 6 caracteres"),
@@ -19,111 +27,123 @@ const userSchema = z.object({
     status_id: z.number().min(1, "Estado no válido"),
 });
 
-type IUser = z.infer<typeof userSchema>
-
-export function UserForm() {
+const UserForm: React.FC = () => {
     const [open, setOpen] = useState(false);
-    const [user, setUser] = useState<IUser>({
-        username: "",
-        password: "",
-        name: "",
-        lastname: "",
-        mail: "",
-        role_id: 1,
-        status_id: 1,
-    });
-    const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const mutation = useMutationCreateUser({
-        onSuccess: () => {
-            setOpen(false);  // Cierra el diálogo cuando se crea el usuario
-            setUser({
-                username: "",
-                password: "",
-                name: "",
-                lastname: "",
-                mail: "",
-                role_id: 1,
-                status_id: 1,
-            });  // Limpia los campos del formulario
-            toast("Usuario creado exitosamente");
-            setErrors({});  // Limpia los errores
-        },
-        onError: (error) => {
-            console.error("Error creando usuario:", error);
-        },
-    });
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setUser((prevUser) => ({
-            ...prevUser,
-            [name]: name === "role_id" || name === "status_id" ? Number(value) : value,
-        }));
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        const validationResult = userSchema.safeParse(user);
-        if (!validationResult.success) {
-            const formattedErrors: Record<string, string> = {};
-            validationResult.error.issues.forEach((issue) => {
-                formattedErrors[issue.path[0]] = issue.message;
-            });
-            setErrors(formattedErrors);
-            return;
+    // useForm hook configurado con Zod y valores predeterminados
+    const { control, register, handleSubmit, reset, formState: { errors } } = useForm({
+        resolver: zodResolver(userSchema),
+        defaultValues: {
+            username: '',
+            password: '',
+            name: '',
+            lastname: '',
+            mail: '',
+            role_id: 1, // Valor por defecto para el rol
+            status_id: 1, // Valor por defecto para el estado
         }
-        setErrors({});
-        mutation.mutate(user);  // Llama a la mutación
-    };
+    });
 
-    const handleCancel = () => {
-        setOpen(false);  // Cierra el diálogo si el usuario cancela
+    const { mutate, isLoading } = useMutationCreateUser(); // isLoading para el estado de la mutación
+
+    // Manejo del envío del formulario
+    const onSubmit = (data: any) => {
+        mutate(data, {
+            onSuccess: () => {
+                // Resetea los campos después de la creación del usuario
+                reset();
+                setOpen(false); // Cierra el modal después del éxito
+                toast("Usuario creado exitosamente");
+            },
+            onError: (error) => {
+                console.error("Error creando usuario:", error);
+                toast("Error al crear usuario");
+            },
+        }); // Llama a la mutación para crear el usuario
     };
 
     return (
-        <>
-            <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger asChild>
-                    <Button variant={'default'}>Crear Usuario</Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px]">
-                    <DialogHeader>
-                        <DialogTitle>Crear Nuevo Usuario</DialogTitle>
-                        <DialogDescription>Completar formulario para crear usuario</DialogDescription>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <InputField id="username" label="Nombre usuario" value={user.username} onChange={handleChange} error={errors.username} />
-                        <InputField id="password" label="Contraseña" type="password" value={user.password} onChange={handleChange} error={errors.password} />
-                        <InputField id="name" label="Nombre" value={user.name} onChange={handleChange} error={errors.name} />
-                        <InputField id="lastname" label="Apellido" value={user.lastname} onChange={handleChange} error={errors.lastname} />
-                        <InputField id="mail" label="Email" type="email" value={user.mail} onChange={handleChange} error={errors.mail} />
-                        <InputField id="role_id" label="Role" type="number" value={user.role_id} onChange={handleChange} error={errors.role_id} />
-                        <InputField id="status_id" label="Status" type="number" value={user.status_id} onChange={handleChange} error={errors.status_id} />
-                        <div className="flex justify-center gap-4 mt-8 col-span-2">
-                            <Button type="submit" variant="default" className="w-1/3" disabled={mutation.isPending}>Aceptar</Button>
-                            <Button type="button" variant="secondary" className="w-1/3" onClick={handleCancel}>Cancelar</Button>
-                        </div>
-                    </form>
-                </DialogContent>
-            </Dialog>
-        </>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button>Crear Usuario</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Crear Nuevo Usuario</DialogTitle>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-2 gap-4">
+                    <div>
+                        <Label>Nombre de Usuario</Label>
+                        <Input {...register("username")} placeholder="Nombre de usuario" />
+                        {errors.username && <p className="text-red-500 text-sm">{errors.username.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Contraseña</Label>
+                        <Input {...register("password")} type="password" placeholder="Contraseña" />
+                        {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Nombre</Label>
+                        <Input {...register("name")} placeholder="Nombre" />
+                        {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Apellido</Label>
+                        <Input {...register("lastname")} placeholder="Apellido" />
+                        {errors.lastname && <p className="text-red-500 text-sm">{errors.lastname.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Email</Label>
+                        <Input {...register("mail")} type="email" placeholder="Correo Electrónico" />
+                        {errors.mail && <p className="text-red-500 text-sm">{errors.mail.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Rol</Label>
+                        <Controller
+                            name="role_id"
+                            control={control}
+                            render={({ field }) => (
+                                <Select onValueChange={(value) => field.onChange(Number(value))}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona un rol" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="1">Admin</SelectItem>
+                                        <SelectItem value="2">Usuario</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.role_id && <p className="text-red-500 text-sm">{errors.role_id.message}</p>}
+                    </div>
+                    <div>
+                        <Label>Estado</Label>
+                        <Controller
+                            name="status_id"
+                            control={control}
+                            render={({ field }) => (
+                                <Select onValueChange={(value) => field.onChange(Number(value))}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Selecciona un estado" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="1">Activo</SelectItem>
+                                        <SelectItem value="2">Inactivo</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            )}
+                        />
+                        {errors.status_id && <p className="text-red-500 text-sm">{errors.status_id.message}</p>}
+                    </div>
+                    <div className="col-span-2 flex justify-end">
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? 'Creando...' : 'Crear Usuario'}
+                        </Button>
+                    </div>
+                </form>
+            </DialogContent>
+        </Dialog>
     );
-}
-
-const InputField: React.FC<{
-    id: string;
-    label: string;
-    type?: string;
-    value: string | number;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    error?: string;
-}> = ({ id, label, type = "text", value, onChange, error }) => (
-    <div className="grid gap-2">
-        <Label htmlFor={id}>{label}</Label>
-        <Input id={id} name={id} type={type} value={value} onChange={onChange} />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-    </div>
-);
+};
 
 export default UserForm;

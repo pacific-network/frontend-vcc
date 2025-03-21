@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import clientService from "@/services/client.service";
 import { queriesConfig } from "./config";
 import { QueryKeys } from "./queryKeys";
+import { CreateClientDto } from "../models/Client"
 
 
 export const UseQueryGetClients = (page: number, take: number) => {
@@ -37,13 +38,13 @@ export const useMutateCreateClient = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async (newClient) => {
-            const res = await clientService.createUser(newClient);
+        mutationFn: async (createClientPayload: CreateClientDto) => {
+            const res = await clientService.createClient(createClientPayload);
             if (res.status === 201) return res.data;
             throw new Error("Error al crear el cliente");
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: [QueryKeys.GET_ALL_CLIENTS]}); // Recarga la lista de clientes
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_CLIENTS] });
         },
     });
 };

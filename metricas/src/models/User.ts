@@ -17,3 +17,12 @@ export interface GetUsersWithPagination {
     meta: PaginationMetaData
 }
 
+
+export interface CreateUserDto {
+    username: string;
+    password: string;
+    name: string;
+    lastname: string;
+    role_id: number;
+    status_id: number;
+}

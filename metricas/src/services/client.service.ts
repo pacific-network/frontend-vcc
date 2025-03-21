@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { RestApiService } from "./restApi.service";
-import { IClient, GetClientWithPagination } from "@/models/Client";
+import { CreateClientDto, GetClientWithPagination } from "@/models/Client";
 import { Pagination } from "@/models/Pagination";
 
 class ClientService {
@@ -19,12 +19,12 @@ class ClientService {
         });
     }
 
-    public async createUser(client: IClient) {
-        return this.restApiService.post<IClient>('/clients', client);
+    public async createClient(client: CreateClientDto) {
+        return this.restApiService.post<CreateClientDto>('/clients', client);
     }
 
     public async getClientCategories() {
-        return this.restApiService.get("categories");
+        return this.restApiService.get("clients/categories");
     }
 
 } export default new ClientService();

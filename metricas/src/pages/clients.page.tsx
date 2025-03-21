@@ -11,7 +11,6 @@ const ClientPage: React.FC = () => {
     return (
         <Layout>
             <ClientTable />
-
         </Layout>
     );
 }
