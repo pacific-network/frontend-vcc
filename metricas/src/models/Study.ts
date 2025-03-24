@@ -19,6 +19,7 @@ export interface IStudy {
     quantity: number;
     observation: string;
     progress_stage: string;
+    files: [];
 }
 
 

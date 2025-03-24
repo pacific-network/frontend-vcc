@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { RestApiService } from "./restApi.service";;
-import { CreateStudyDto, GetStudyWithPagination } from "@/models/Study";
+import { CreateStudyDto, GetStudyWithPagination, IStudy } from "@/models/Study";
 
 class StudyService {
     restApiService: AxiosInstance;
@@ -16,6 +16,11 @@ class StudyService {
 
     public async getStudies(page: number, take: number) {
         return this.restApiService.get<GetStudyWithPagination>(`/studies?page=${page}&take=${take}`);
+    }
+
+    public async getStudyById(studyId: number) {
+        return await this.restApiService.get<IStudy>(`studies/${studyId}`);
+
     }
 }
 

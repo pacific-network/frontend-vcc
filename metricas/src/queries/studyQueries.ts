@@ -36,3 +36,17 @@ export const UseQueryGetStudies = (page: number, take: number) => {
         ...queriesConfig
     });
 };
+
+export const useQueryGetStudiesById = (studyId: number) => {  // Asegúrate de pasar el studyId como parámetro
+    return useQuery({
+        queryKey: [QueryKeys.GET_STUDY_BY_ID, studyId], // Incluye studyId para que se actualice al cambiar
+        queryFn: async () => {
+            const res = await studyService.getStudyById(studyId); // Asegúrate de pasar el ID aquí
+            if (res.status === 200) {
+                return res.data;
+            }
+            throw new Error('Error al obtener el estudio seleccionado');
+        },
+        ...queriesConfig,
+    });
+}

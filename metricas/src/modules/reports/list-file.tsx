@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CustomHeader from '@/components/custom-header';
 import { UseQueryGetStudies } from '@/queries/studyQueries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button'; // Asegúrate de importar el componente Button
+import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import CreateStudyForm from '../studies/create-study';
 
 const ListStudies: React.FC = () => {
-    const [page, setPage] = useState(1); // Estado para la página actual
+    const navigate = useNavigate();
+    const [page, setPage] = useState(1);
     const { data: studiesData, isLoading } = UseQueryGetStudies(page, 10);
 
     const columns = [
@@ -17,10 +18,9 @@ const ListStudies: React.FC = () => {
         'Estado',
         'Fecha Inicio',
         'Fecha Termino',
-
+        'Acciones'
     ];
 
-    // Función para manejar el cambio de página
     const handlePageChange = (newPage: number) => {
         if (newPage > 0 && newPage <= studiesData?.meta.pageCount) {
             setPage(newPage);
@@ -28,8 +28,7 @@ const ListStudies: React.FC = () => {
     };
 
     const handleViewDetail = (studyId: number) => {
-        // Aquí podrías redirigir a otra página o abrir un modal para mostrar más detalles
-        console.log('Ver detalles del estudio con id:', studyId);
+        navigate('/data-studies', { state: { studyId } });
     };
 
     return (
@@ -67,12 +66,12 @@ const ListStudies: React.FC = () => {
                                         <TableCell className="px-4 py-2">{new Date(study.start_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.end_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2 text-center">
-                                            <button
+                                            <Button
+                                                variant="outline"
                                                 onClick={() => handleViewDetail(study.id)}
-                                                className="text-blue-600 hover:text-blue-800"
                                             >
                                                 Ver Detalle
-                                            </button>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -80,7 +79,7 @@ const ListStudies: React.FC = () => {
                         </TableBody>
                     </Table>
 
-                    {/* Paginación con el diseño solicitado */}
+                    {/* Paginación */}
                     <div className="flex justify-between items-center mt-4">
                         <Button
                             variant="outline"

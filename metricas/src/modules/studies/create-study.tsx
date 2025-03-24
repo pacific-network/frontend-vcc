@@ -23,7 +23,7 @@ const CreateStudyForm: FC = () => {
     const [formData, setFormData] = useState(initialFormData);
 
     const { mutate } = useMutationCreateStudy();
-    const { data: clients } = UseQueryGetClients();
+    const { data: clients } = UseQueryGetClients(1, 10);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
