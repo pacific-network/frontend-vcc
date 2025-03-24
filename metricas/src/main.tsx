@@ -7,7 +7,6 @@ import { AuthProvider } from "./context/authProvider.tsx";
 import Login from "./pages/login.page.tsx";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/private-route.tsx";
-import HomeAdmin from "./pages/homeAdmin.page.tsx";
 import { Toaster } from "sonner";
 import Users from "./pages/user.page.tsx";
 import Report from "./pages/report.page.tsx";
@@ -16,6 +15,7 @@ import ClientPage from "./pages/clients.page.tsx";
 
 import StudyPage from "./pages/studies.page.tsx";
 import DetailStudy from "./pages/details-study.page.tsx";
+import Home from "./pages/home.page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -28,7 +28,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<App />} />
-            <Route path="/homeAdmin" element={<PrivateRoute><HomeAdmin /></PrivateRoute>} />
+            <Route path="/homeAdmin" element={<PrivateRoute><Home /></PrivateRoute>} />
             <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>} />
             <Route path="/report" element={<PrivateRoute><Report /></PrivateRoute>} />
             <Route path="/list" element={<PrivateRoute><ListReport /></PrivateRoute>} />

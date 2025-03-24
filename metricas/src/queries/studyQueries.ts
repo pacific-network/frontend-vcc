@@ -47,6 +47,7 @@ export const useQueryGetStudiesById = (studyId: number) => {  // Asegúrate de p
             }
             throw new Error('Error al obtener el estudio seleccionado');
         },
+        
         ...queriesConfig,
     });
 }

@@ -21,10 +21,10 @@ import fileService from "@/services/file.service";
 export const useMutationUploadFile = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (data: { study: string; client: string; file: File }) => {
+        mutationFn: async (data: { studyId: number; client: string; file: File }) => {
             const formData = new FormData();
             formData.append('file', data.file);
-            formData.append('study', data.study);
+            formData.append('studyId', data.studyId.toString()); // Aquí aseguramos que `studyId` se pase como string
             formData.append('client', data.client);
             const res = await fileService.uploadFile(formData);
             if (res.status === 201) {
@@ -33,7 +33,7 @@ export const useMutationUploadFile = () => {
             throw new Error('Error al cargar archivo');
         },
         onSuccess: async () => {
-            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_ALL_FILES] });
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_STUDY_BY_ID] });
         },
         ...queriesConfig
     });

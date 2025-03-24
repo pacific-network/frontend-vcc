@@ -18,6 +18,7 @@ const CreateStudyForm: FC = () => {
         end_date: "",
         quantity: "",
         observation: "",
+        price: "",
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -82,6 +83,7 @@ const CreateStudyForm: FC = () => {
                         <Input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required />
                         <Input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required />
                         <Input type="number" name="quantity" value={formData.quantity} onChange={handleChange} placeholder="Cantidad de contactos a realizar" required />
+                        <Input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Valor encuesta" required />
                         <Textarea name="observation" value={formData.observation} onChange={handleChange} placeholder="Observaciones" rows={3} required />
                         <Button type="submit" className="w-full">Enviar</Button>
                     </form>

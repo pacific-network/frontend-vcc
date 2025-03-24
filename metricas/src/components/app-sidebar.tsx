@@ -1,4 +1,4 @@
-import { DatabaseBackup, Home, BarChart2, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake } from "lucide-react";
+import { DatabaseBackup, Home, BarChart2, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
     Sidebar,
@@ -26,6 +26,9 @@ const menuItems = [
         title: "Inicio",
         url: "/homeAdmin",
         icon: Home,
+        subMenu: [
+            { title: "Dashboard", url: '/homeAdmin', icon: LayoutDashboard },
+        ],
     },
     {
         title: "Estudios",

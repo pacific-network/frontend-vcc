@@ -9,14 +9,19 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
+
 } from "@/components/ui/dialog";
 
-const FileUploadDialog = () => {
+interface FileUploadDialogProps {
+    onClose: () => void;
+    studyId: number;
+    client: string;
+}
+
+const FileUploadDialog: React.FC<FileUploadDialogProps> = ({ onClose, studyId, client }) => {
     const [file, setFile] = useState<File | null>(null);
-    const [study, setStudy] = useState("");
-    const [client, setClient] = useState("");
     const mutation = useMutationUploadFile();
+
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0] || null;
@@ -29,22 +34,26 @@ const FileUploadDialog = () => {
             return;
         }
 
-        const payload = { file, study, client };
+        // Asegúrate de que studyId sea un número y no nulo
+        if (!studyId || isNaN(studyId)) {
+            toast.error("El ID de estudio es obligatorio y debe ser un número válido.");
+            return;
+        }
+
+        const payload = { file, studyId, client };
         console.log("Payload:", payload);
 
         try {
             await mutation.mutateAsync(payload);
             toast.success("El archivo fue subido exitosamente.");
+            onClose(); // Cierra el modal después de la carga
         } catch {
             toast.error("Hubo un error al subir el archivo.");
         }
     };
 
     return (
-        <Dialog>
-            <DialogTrigger asChild>
-                <Button>Subir Archivo</Button>
-            </DialogTrigger>
+        <Dialog open={true} onOpenChange={onClose}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="text-center text-xl font-semibold">
@@ -54,17 +63,17 @@ const FileUploadDialog = () => {
                 <div className="flex flex-col gap-4 p-4">
                     <Input
                         type="text"
+                        value={studyId || ""}
+                        disabled
                         placeholder="Estudio"
-                        value={study}
-                        onChange={(e) => setStudy(e.target.value)}
                     />
                     <Input
                         type="text"
+                        value={client || ""}
+                        disabled
                         placeholder="Cliente"
-                        value={client}
-                        onChange={(e) => setClient(e.target.value)}
                     />
-                    <Input type="file" accept=".xlsx,.xls" onChange={handleFileChange} />
+                    <Input type="file" accept=".csv" onChange={handleFileChange} />
                     <Button onClick={handleUpload} className="w-full flex items-center gap-2">
                         <UploadCloud className="w-5 h-5" /> Subir Archivo
                     </Button>

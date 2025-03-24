@@ -7,41 +7,37 @@ import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import CustomHeader from '@/components/custom-header';
 
-import { FileUploadDialog } from '../../'; // Asegúrate de importar el componente FileUploadDialog
+import FileUploadDialog from '../../modules/reports/upload-file';
 
 const VisualizerData: React.FC = () => {
     const location = useLocation();
-    const studyId = location.state?.studyId || null; // Asegurar un valor por defecto
-    const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false); // Estado para controlar el modal
+    const studyId = location.state?.studyId || null;
+    const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
 
     // Llamada a la API para obtener los datos del estudio
-    const { data, error, isLoading } = useQueryGetStudiesById(studyId, {
-        enabled: !!studyId, // Solo ejecuta la consulta si studyId es válido
-    });
+    const { data } = useQueryGetStudiesById(studyId);
 
-    if (!studyId) {
-        return <div>Error: Estudio no encontrado.</div>;
+    if (!data) {
+        return <div className="text-center mt-5">Cargando datos...</div>;
     }
 
-    // Manejo de los estados de carga y error
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error al cargar el estudio</div>;
-    }
-
-    // Extraer los datos del estudio
-    const { id, name, client, start_date, end_date, quantity, observation, progress_stage, files } = data;
+    // Extraer los datos del estudio con valores predeterminados
+    const {
+        id = '',
+        name = '',
+        client = '',
+        start_date = '',
+        end_date = '',
+        quantity = 0,
+        observation = '',
+        progress_stage = '',
+        files = [],
+    } = data;
 
     // Seleccionar el archivo con la fecha más reciente
-    const latestFile = files.reduce((latest, current) => {
-        if (!latest || new Date(current.date) > new Date(latest.date)) {
-            return current;
-        }
-        return latest;
-    }, null);
+    const latestFile = files.length > 0
+        ? files.reduce((latest, current) => new Date(current.date) > new Date(latest.date) ? current : latest, files[0])
+        : null;
 
     return (
         <div className='mt-4'>
@@ -56,77 +52,30 @@ const VisualizerData: React.FC = () => {
                     <form>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
-                                <label htmlFor="id" className="block font-medium">ID</label>
-                                <input
-                                    id="id"
-                                    type="text"
-                                    value={id}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium">ID</label>
+                                <input type="text" value={id} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="name" className="block font-medium mt-3">Nombre</label>
-                                <input
-                                    id="name"
-                                    type="text"
-                                    value={name}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Nombre</label>
+                                <input type="text" value={name} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="client" className="block font-medium mt-3">Cliente</label>
-                                <input
-                                    id="client"
-                                    type="text"
-                                    value={client}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Cliente</label>
+                                <input type="text" value={client} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="start_date" className="block font-medium mt-3">Fecha de Inicio</label>
-                                <input
-                                    id="start_date"
-                                    type="text"
-                                    value={new Date(start_date).toLocaleDateString()}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Fecha de Inicio</label>
+                                <input type="text" value={start_date ? new Date(start_date).toLocaleDateString() : ''} disabled className="w-full p-2 border border-gray-300 rounded-md" />
                             </div>
                             <div>
-                                <label htmlFor="end_date" className="block font-medium">Fecha de Término</label>
-                                <input
-                                    id="end_date"
-                                    type="text"
-                                    value={new Date(end_date).toLocaleDateString()}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium">Fecha de Término</label>
+                                <input type="text" value={end_date ? new Date(end_date).toLocaleDateString() : ''} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="quantity" className="block font-medium mt-3">Cantidad</label>
-                                <input
-                                    id="quantity"
-                                    type="text"
-                                    value={quantity}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Cantidad</label>
+                                <input type="text" value={quantity} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="observation" className="block font-medium mt-3">Observación</label>
-                                <textarea
-                                    id="observation"
-                                    value={observation || ''}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Observación</label>
+                                <textarea value={observation} disabled className="w-full p-2 border border-gray-300 rounded-md" />
 
-                                <label htmlFor="progress_stage" className="block font-medium mt-3">Estado de Progreso</label>
-                                <input
-                                    id="progress_stage"
-                                    type="text"
-                                    value={progress_stage}
-                                    disabled
-                                    className="w-full p-2 border border-gray-300 rounded-md"
-                                />
+                                <label className="block font-medium mt-3">Estado de Progreso</label>
+                                <input type="text" value={progress_stage} disabled className="w-full p-2 border border-gray-300 rounded-md" />
                             </div>
                         </div>
                         <Button className="mt-3" type="submit" disabled>Actualizar Información</Button>
@@ -156,40 +105,40 @@ const VisualizerData: React.FC = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {latestFile.data.map((row, index) => (
+                                {latestFile.data?.map((row, index) => (
                                     <TableRow key={index}>
-                                        <TableCell>{row.Fecha}</TableCell>
-                                        <TableCell>{row.Login}</TableCell>
-                                        <TableCell>{row.Nombre}</TableCell>
-                                        <TableCell>{row.Usuario}</TableCell>
-                                        <TableCell>{row.Rechazadas}</TableCell>
-                                        <TableCell>{row.Finalizadas}</TableCell>
-                                        <TableCell>{row['Tiempo efectivo']}</TableCell>
-                                        <TableCell>{row['﻿Código estudio']}</TableCell>
-                                        <TableCell>{row['Tiempo de conexión']}</TableCell>
+                                        <TableCell>{row.Fecha || '-'}</TableCell>
+                                        <TableCell>{row.Login || '-'}</TableCell>
+                                        <TableCell>{row.Nombre || '-'}</TableCell>
+                                        <TableCell>{row.Usuario || '-'}</TableCell>
+                                        <TableCell>{row.Rechazadas || '-'}</TableCell>
+                                        <TableCell>{row.Finalizadas || '-'}</TableCell>
+                                        <TableCell>{row['Tiempo efectivo'] || '-'}</TableCell>
+                                        <TableCell>{row['Código estudio'] || '-'}</TableCell>
+                                        <TableCell>{row['Tiempo de conexión'] || '-'}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
                         </Table>
 
-                        <Button className="mt-8" type="submit">Cargar Reporte</Button>
+                        <Button className="mt-8" type="button" onClick={() => setOpenFileUploadDialog(true)}>
+                            Cargar Reporte
+                        </Button>
                     </CardContent>
                 </Card>
             ) : (
                 <div className="mt-6">
                     <Card className="p-3">
                         <CardContent>No hay archivos disponibles para este estudio.</CardContent>
+                        <Button onClick={() => setOpenFileUploadDialog(true)} className="mt-4">Subir Reporte</Button>
                     </Card>
-
-                    {/* Mostrar botón para cargar reporte inicial */}
-                    <Button className="mt-3" onClick={() => setOpenFileUploadDialog(true)}>
-                        Cargar Reporte Inicial
-                    </Button>
                 </div>
             )}
 
-            {/* Mostrar el diálogo FileUploadDialog cuando no haya archivos */}
-            {openFileUploadDialog && <FileUploadDialog onClose={() => setOpenFileUploadDialog(false)} />}
+            {/* Modal para cargar archivos */}
+            {openFileUploadDialog && (
+                <FileUploadDialog onClose={() => setOpenFileUploadDialog(false)} studyId={studyId} client={client} />
+            )}
         </div>
     );
 };

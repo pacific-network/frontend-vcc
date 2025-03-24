@@ -5,10 +5,12 @@ import { UseQueryGetStudies } from '@/queries/studyQueries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
+import { Input } from '@/components/ui/input';
 
 const ListStudies: React.FC = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState('');
     const { data: studiesData, isLoading } = UseQueryGetStudies(page, 10);
 
     const columns = [
@@ -22,7 +24,7 @@ const ListStudies: React.FC = () => {
     ];
 
     const handlePageChange = (newPage: number) => {
-        if (newPage > 0 && newPage <= studiesData?.meta.pageCount) {
+        if (newPage > 0 && newPage <= (studiesData?.meta.pageCount || 1)) {
             setPage(newPage);
         }
     };
@@ -30,6 +32,12 @@ const ListStudies: React.FC = () => {
     const handleViewDetail = (studyId: number) => {
         navigate('/data-studies', { state: { studyId } });
     };
+
+    // Filtrar estudios por nombre o cliente
+    const filteredStudies = studiesData?.data?.filter((study) =>
+        study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        study.client.toLowerCase().includes(searchTerm.toLowerCase())
+    ) || [];
 
     return (
         <div className='size-full p-10'>
@@ -39,6 +47,17 @@ const ListStudies: React.FC = () => {
                     <CardTitle>Listado de Estudios</CardTitle>
                 </CardHeader>
                 <CardContent>
+                    {/* Barra de búsqueda */}
+                    <div className="mb-4 flex justify-end">
+                        <Input
+                            type="text"
+                            placeholder="Buscar por nombre o cliente..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-80 border p-2"
+                        />
+                    </div>
+
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -56,8 +75,8 @@ const ListStudies: React.FC = () => {
                                         Cargando...
                                     </TableCell>
                                 </TableRow>
-                            ) : (
-                                studiesData?.data?.map((study) => (
+                            ) : filteredStudies.length > 0 ? (
+                                filteredStudies.map((study) => (
                                     <TableRow key={study.id} className="border-b">
                                         <TableCell className="px-4 py-2">{study.id}</TableCell>
                                         <TableCell className="px-4 py-2">{study.name}</TableCell>
@@ -75,6 +94,12 @@ const ListStudies: React.FC = () => {
                                         </TableCell>
                                     </TableRow>
                                 ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={columns.length} className="px-4 py-2 text-center text-gray-500">
+                                        No se encontraron estudios.
+                                    </TableCell>
+                                </TableRow>
                             )}
                         </TableBody>
                     </Table>
