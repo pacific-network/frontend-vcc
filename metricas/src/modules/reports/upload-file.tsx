@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UploadCloud } from "lucide-react";
 import { useMutationUploadFile } from "@/queries/fileQueries";
-import { toast } from "sonner"; // Importa el toast de sonner
+import { toast } from "sonner";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 
-const FileUpload = () => {
+const FileUploadDialog = () => {
     const [file, setFile] = useState<File | null>(null);
     const [study, setStudy] = useState("");
     const [client, setClient] = useState("");
@@ -19,34 +25,33 @@ const FileUpload = () => {
 
     const handleUpload = async () => {
         if (!file) {
-            alert("Selecciona un archivo antes de subirlo.");
+            toast.error("Selecciona un archivo antes de subirlo.");
             return;
         }
 
-        const payload = {
-            file: file,
-            study: study,
-            client: client,
-        };
-
-        console.log("Payload:", payload); // ✅ Verifica que el objeto tiene las propiedades correctas
+        const payload = { file, study, client };
+        console.log("Payload:", payload);
 
         try {
             await mutation.mutateAsync(payload);
-            toast.success("El archivo fue subido exitosamente."); // Muestra el mensaje de éxito
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        } catch (error) {
-            toast.error("Hubo un error al subir el archivo."); // Muestra un mensaje de error en caso de fallo
+            toast.success("El archivo fue subido exitosamente.");
+        } catch {
+            toast.error("Hubo un error al subir el archivo.");
         }
     };
 
     return (
-        <div className="size-full p-10">
-            <Card className="max-w-4xl mx-auto p-6 shadow-lg rounded-2xl">
-                <CardHeader>
-                    <CardTitle className="text-center text-xl font-semibold">Subir Archivo Excel</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-col gap-4">
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button>Subir Archivo</Button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle className="text-center text-xl font-semibold">
+                        Subir Archivo Excel
+                    </DialogTitle>
+                </DialogHeader>
+                <div className="flex flex-col gap-4 p-4">
                     <Input
                         type="text"
                         placeholder="Estudio"
@@ -63,10 +68,10 @@ const FileUpload = () => {
                     <Button onClick={handleUpload} className="w-full flex items-center gap-2">
                         <UploadCloud className="w-5 h-5" /> Subir Archivo
                     </Button>
-                </CardContent>
-            </Card>
-        </div>
+                </div>
+            </DialogContent>
+        </Dialog>
     );
 };
 
-export default FileUpload;
+export default FileUploadDialog;

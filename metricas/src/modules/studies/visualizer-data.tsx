@@ -1,31 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import Layout from '@/pages/layout.page';
+
 import { useQueryGetStudiesById } from '@/queries/studyQueries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import CustomHeader from '@/components/custom-header';
 
+import { FileUploadDialog } from '../../'; // Asegúrate de importar el componente FileUploadDialog
+
 const VisualizerData: React.FC = () => {
     const location = useLocation();
-    const studyId = location.state?.studyId;
+    const studyId = location.state?.studyId || null; // Asegurar un valor por defecto
+    const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false); // Estado para controlar el modal
 
-    // Asegúrate de que studyId esté presente
+    // Llamada a la API para obtener los datos del estudio
+    const { data, error, isLoading } = useQueryGetStudiesById(studyId, {
+        enabled: !!studyId, // Solo ejecuta la consulta si studyId es válido
+    });
+
     if (!studyId) {
         return <div>Error: Estudio no encontrado.</div>;
     }
 
-    // Llamada a la API para obtener los datos del estudio
-    const { data, error, isLoading } = useQueryGetStudiesById(studyId);
-
     // Manejo de los estados de carga y error
     if (isLoading) {
-        return <div>Loading...</div>;  // Mostrar un mensaje de carga
+        return <div>Loading...</div>;
     }
 
     if (error) {
-        return <div>Error al cargar el estudio</div>;  // Mostrar un mensaje de error
+        return <div>Error al cargar el estudio</div>;
     }
 
     // Extraer los datos del estudio
@@ -40,7 +44,7 @@ const VisualizerData: React.FC = () => {
     }, null);
 
     return (
-        <div className="size-full p-10">
+        <div className='mt-4'>
             <CustomHeader title="Detalles del estudio" />
 
             {/* Card para los detalles del estudio */}
@@ -50,83 +54,142 @@ const VisualizerData: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                     <form>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
-                                <p><strong>ID:</strong> {id}</p>
-                                <p><strong>Nombre:</strong> {name}</p>
-                                <p><strong>Cliente:</strong> {client}</p>
-                                <p><strong>Fecha de Inicio:</strong> {new Date(start_date).toLocaleDateString()}</p>
+                                <label htmlFor="id" className="block font-medium">ID</label>
+                                <input
+                                    id="id"
+                                    type="text"
+                                    value={id}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="name" className="block font-medium mt-3">Nombre</label>
+                                <input
+                                    id="name"
+                                    type="text"
+                                    value={name}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="client" className="block font-medium mt-3">Cliente</label>
+                                <input
+                                    id="client"
+                                    type="text"
+                                    value={client}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="start_date" className="block font-medium mt-3">Fecha de Inicio</label>
+                                <input
+                                    id="start_date"
+                                    type="text"
+                                    value={new Date(start_date).toLocaleDateString()}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
                             </div>
                             <div>
-                                <p><strong>Fecha de Término:</strong> {new Date(end_date).toLocaleDateString()}</p>
-                                <p><strong>Cantidad:</strong> {quantity}</p>
-                                <p><strong>Observación:</strong> {observation || 'Sin observaciones'}</p>
-                                <p><strong>Estado de Progreso:</strong> {progress_stage}</p>
+                                <label htmlFor="end_date" className="block font-medium">Fecha de Término</label>
+                                <input
+                                    id="end_date"
+                                    type="text"
+                                    value={new Date(end_date).toLocaleDateString()}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="quantity" className="block font-medium mt-3">Cantidad</label>
+                                <input
+                                    id="quantity"
+                                    type="text"
+                                    value={quantity}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="observation" className="block font-medium mt-3">Observación</label>
+                                <textarea
+                                    id="observation"
+                                    value={observation || ''}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+
+                                <label htmlFor="progress_stage" className="block font-medium mt-3">Estado de Progreso</label>
+                                <input
+                                    id="progress_stage"
+                                    type="text"
+                                    value={progress_stage}
+                                    disabled
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
                             </div>
                         </div>
-                        <Button className="mt-4" type="submit">Actualizar Información</Button>
+                        <Button className="mt-3" type="submit" disabled>Actualizar Información</Button>
                     </form>
                 </CardContent>
             </Card>
 
             {/* Card para los archivos */}
             {latestFile ? (
-                <Card className="mt-6">
+                <Card className='mt-5 mb-4'>
                     <CardHeader>
                         <CardTitle>Datos del Archivo Más Reciente</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="overflow-x-auto">
-                            <Table className="table-auto text-sm border-collapse">
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="p-2">Fecha</TableHead>
-                                        <TableHead className="p-2">Login</TableHead>
-                                        <TableHead className="p-2">Nombre</TableHead>
-                                        <TableHead className="p-2">Usuario</TableHead>
-                                        <TableHead className="p-2">Rechazadas</TableHead>
-                                        <TableHead className="p-2">Finalizadas</TableHead>
-                                        <TableHead className="p-2">Test rechazado</TableHead>
-                                        <TableHead className="p-2">Rechazadas e.c.</TableHead>
-                                        <TableHead className="p-2">Test finalizado</TableHead>
-                                        <TableHead className="p-2">Tiempo efectivo</TableHead>
-                                        <TableHead className="p-2">Finalizadas e.c.</TableHead>
-                                        <TableHead className="p-2">Código estudio</TableHead>
-                                        <TableHead className="p-2">Tiempo de conexión</TableHead>
-                                        <TableHead className="p-2">Efectivo en segundos</TableHead>
-                                        <TableHead className="p-2">Conexión en segundos</TableHead>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Fecha</TableHead>
+                                    <TableHead>Login</TableHead>
+                                    <TableHead>Nombre</TableHead>
+                                    <TableHead>Usuario</TableHead>
+                                    <TableHead>Rechazadas</TableHead>
+                                    <TableHead>Finalizadas</TableHead>
+                                    <TableHead>Tiempo efectivo</TableHead>
+                                    <TableHead>Código estudio</TableHead>
+                                    <TableHead>Tiempo de conexión</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {latestFile.data.map((row, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{row.Fecha}</TableCell>
+                                        <TableCell>{row.Login}</TableCell>
+                                        <TableCell>{row.Nombre}</TableCell>
+                                        <TableCell>{row.Usuario}</TableCell>
+                                        <TableCell>{row.Rechazadas}</TableCell>
+                                        <TableCell>{row.Finalizadas}</TableCell>
+                                        <TableCell>{row['Tiempo efectivo']}</TableCell>
+                                        <TableCell>{row['﻿Código estudio']}</TableCell>
+                                        <TableCell>{row['Tiempo de conexión']}</TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {latestFile.data.map((row, index) => (
-                                        <TableRow key={index}>
-                                            <TableCell className="p-2">{row.Fecha}</TableCell>
-                                            <TableCell className="p-2">{row.Login}</TableCell>
-                                            <TableCell className="p-2">{row.Nombre}</TableCell>
-                                            <TableCell className="p-2">{row.Usuario}</TableCell>
-                                            <TableCell className="p-2">{row.Rechazadas}</TableCell>
-                                            <TableCell className="p-2">{row.Finalizadas}</TableCell>
-                                            <TableCell className="p-2">{row['Test rechazado']}</TableCell>
-                                            <TableCell className="p-2">{row['Rechazadas e.c.']}</TableCell>
-                                            <TableCell className="p-2">{row['Test finalizado']}</TableCell>
-                                            <TableCell className="p-2">{row['Tiempo efectivo']}</TableCell>
-                                            <TableCell className="p-2">{row['Finalizadas e.c.']}</TableCell>
-                                            <TableCell className="p-2">{row['﻿Código estudio']}</TableCell>
-                                            <TableCell className="p-2">{row['Tiempo de conexión']}</TableCell>
-                                            <TableCell className="p-2">{row['Efectivo en segundos']}</TableCell>
-                                            <TableCell className="p-2">{row['Conexión en segundos']}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
+                                ))}
+                            </TableBody>
+                        </Table>
+
+                        <Button className="mt-8" type="submit">Cargar Reporte</Button>
                     </CardContent>
                 </Card>
             ) : (
-                <Card className="mt-6">
-                    <CardContent>No hay archivos disponibles para este estudio.</CardContent>
-                </Card>
+                <div className="mt-6">
+                    <Card className="p-3">
+                        <CardContent>No hay archivos disponibles para este estudio.</CardContent>
+                    </Card>
+
+                    {/* Mostrar botón para cargar reporte inicial */}
+                    <Button className="mt-3" onClick={() => setOpenFileUploadDialog(true)}>
+                        Cargar Reporte Inicial
+                    </Button>
+                </div>
             )}
+
+            {/* Mostrar el diálogo FileUploadDialog cuando no haya archivos */}
+            {openFileUploadDialog && <FileUploadDialog onClose={() => setOpenFileUploadDialog(false)} />}
         </div>
     );
 };
