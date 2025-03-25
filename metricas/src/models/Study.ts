@@ -28,3 +28,14 @@ export interface GetStudyWithPagination {
     data: IStudy[];
     meta: PaginationMetaData
 }
+
+export interface updateStudy {
+    id: number;  // Añadir el id del estudio
+    observation: string;
+    progress_stage: string;
+}
+
+export interface ProgressStage {
+    id: number;
+    name: string;
+}

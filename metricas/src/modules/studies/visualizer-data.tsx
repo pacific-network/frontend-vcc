@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { useLocation } from 'react-router-dom';
-
-import { useQueryGetStudiesById } from '@/queries/studyQueries';
+import { useQueryGetProgressStages, useQueryGetStudiesById } from '@/queries/studyQueries';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import CustomHeader from '@/components/custom-header';
-
+import { useMutationUpdateStudyById } from '@/queries/studyQueries';
 import FileUploadDialog from '../../modules/reports/upload-file';
+import { toast } from 'sonner';
 
 const VisualizerData: React.FC = () => {
     const location = useLocation();
@@ -16,27 +16,46 @@ const VisualizerData: React.FC = () => {
 
     // Llamada a la API para obtener los datos del estudio
     const { data } = useQueryGetStudiesById(studyId);
+    const mutation = useMutationUpdateStudyById();
+    const { data: dataProgress } = useQueryGetProgressStages();
+    
+
+    const [formData, setFormData] = useState({
+        observation: '',
+        progress_stage: ''
+    });
+
+    useEffect(() => {
+        if (data) {
+            setFormData({
+                observation: data.observation || '',
+                progress_stage: data.progress_stage || ''
+            });
+        }
+    }, [data]);
+
+    const handleUpdateStudy = async () => {
+        try {
+            await mutation.mutateAsync({
+                id: studyId,
+                observation: formData.observation,
+                progress_stage: formData.progress_stage
+            });
+            toast('Actualización exitosa');
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
     if (!data) {
         return <div className="text-center mt-5">Cargando datos...</div>;
     }
 
-    // Extraer los datos del estudio con valores predeterminados
-    const {
-        id = '',
-        name = '',
-        client = '',
-        start_date = '',
-        end_date = '',
-        quantity = 0,
-        observation = '',
-        progress_stage = '',
-        files = [],
-    } = data;
+    const { id = '', name = '', client = '', start_date = '', end_date = '', quantity = 0, files = [] } = data;
 
     // Seleccionar el archivo con la fecha más reciente
     const latestFile = files.length > 0
-        ? files.reduce((latest, current) => new Date(current.date) > new Date(latest.date) ? current : latest, files[0])
+        ? files.reduce((latest, current) => new Date(current.date) > new Date(latest.date) ? current : latest, files[0] || {})
         : null;
 
     return (
@@ -50,35 +69,118 @@ const VisualizerData: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                     <form>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Columna izquierda */}
                             <div>
-                                <label className="block font-medium">ID</label>
-                                <input type="text" value={id} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">ID</label>
+                                    <input
+                                        type="text"
+                                        value={id}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Nombre</label>
-                                <input type="text" value={name} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Nombre</label>
+                                    <input
+                                        type="text"
+                                        value={name}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Cliente</label>
-                                <input type="text" value={client} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Cliente</label>
+                                    <input
+                                        type="text"
+                                        value={client}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Fecha de Inicio</label>
-                                <input type="text" value={start_date ? new Date(start_date).toLocaleDateString() : ''} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Fecha de Inicio</label>
+                                    <input
+                                        type="text"
+                                        value={start_date ? new Date(start_date).toLocaleDateString() : ''}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
                             </div>
+
+                            {/* Columna derecha */}
                             <div>
-                                <label className="block font-medium">Fecha de Término</label>
-                                <input type="text" value={end_date ? new Date(end_date).toLocaleDateString() : ''} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Fecha de Término</label>
+                                    <input
+                                        type="text"
+                                        value={end_date ? new Date(end_date).toLocaleDateString() : ''}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Cantidad</label>
-                                <input type="text" value={quantity} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Cantidad</label>
+                                    <input
+                                        type="text"
+                                        value={quantity}
+                                        disabled
+                                        className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Observación</label>
-                                <textarea value={observation} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Observación</label>
+                                    <textarea
+                                        value={formData.observation}
+                                        onChange={(e) => setFormData({ ...formData, observation: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                    />
+                                </div>
 
-                                <label className="block font-medium mt-3">Estado de Progreso</label>
-                                <input type="text" value={progress_stage} disabled className="w-full p-2 border border-gray-300 rounded-md" />
+                                <div className="mb-4">
+                                    <label className="block font-medium">Estado de Progreso</label>
+                                    <select value={formData.progress_stage} onChange={(e) => setFormData({ ...formData, progress_stage: e.target.value })} className="w-full p-2 border border-gray-300 rounded-md">
+                                        <option value="" disabled>Seleccionar estado...</option>
+                                        {dataProgress?.map((stage: { id: string, name: string }) => (
+                                            <option key={stage.id} value={stage.id}>{stage.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
                         </div>
-                        <Button className="mt-3" type="submit" disabled>Actualizar Información</Button>
+
+                        {/* Archivos subidos */}
+                        <div className="mt-6">
+                            <label className="block font-medium">Archivos subidos</label>
+                            <ul className="mt-3 list-disc list-inside">
+                                {files.length > 0 ? (
+                                    files.map((file, index) => (
+                                        <li key={index} className="flex justify-between items-center">
+                                            <span>
+                                                {file.date
+                                                    ? new Date(file.date).toLocaleDateString()
+                                                    : '-'}{' '}
+                                                - {file.code || 'Sin nombre'}
+                                            </span>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <p className="mt-2 text-gray-500">No hay archivos subidos.</p>
+                                )}
+                            </ul>
+                        </div>
+
+                        {/* Botón de actualización */}
+                        <Button className="mt-6" type="button" onClick={handleUpdateStudy}>
+                            Actualizar Información
+                        </Button>
                     </form>
                 </CardContent>
             </Card>
@@ -105,7 +207,7 @@ const VisualizerData: React.FC = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {latestFile.data?.map((row, index) => (
+                                {latestFile.data?.map((row: { [key: string]: any }, index: number) => (
                                     <TableRow key={index}>
                                         <TableCell>{row.Fecha || '-'}</TableCell>
                                         <TableCell>{row.Login || '-'}</TableCell>

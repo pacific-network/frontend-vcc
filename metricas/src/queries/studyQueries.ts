@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import studyService from "@/services/study.service";
 import { queriesConfig } from "./config";
 import { QueryKeys } from "./queryKeys";
-import { CreateStudyDto, IStudy } from "@/models/Study";
+import { CreateStudyDto, updateStudy } from "@/models/Study";
 
 
 export const useMutationCreateStudy = () => {
@@ -55,8 +55,8 @@ export const useQueryGetStudiesById = (studyId: number) => {  // Asegúrate de p
 export const useMutationUpdateStudyById = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (study: IStudy) => {
-            const res = await studyService.updateStudyById(study.id); // Corregido el uso de await
+        mutationFn: async (studyData: updateStudy) => {
+            const res = await studyService.updateStudyById(studyData.id, studyData); // Pasar studyId y los datos
             if (res.status === 200) {
                 return res.data;
             }
@@ -68,3 +68,17 @@ export const useMutationUpdateStudyById = () => {
         ...queriesConfig
     });
 };
+
+export const useQueryGetProgressStages = () => {   
+    return useQuery({
+        queryKey: [QueryKeys.GET_PROGRESS_STAGES],
+        queryFn: async () => {
+            const res = await studyService.getProgressStages();
+            if (res.status === 200) {
+                return res.data;
+            }
+            throw new Error('Error al obtener las etapas de progreso');
+        },
+        ...queriesConfig
+    });
+}
