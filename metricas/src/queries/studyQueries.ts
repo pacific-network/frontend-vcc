@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import studyService from "@/services/study.service";
 import { queriesConfig } from "./config";
 import { QueryKeys } from "./queryKeys";
-import { CreateStudyDto } from "@/models/Study";
+import { CreateStudyDto, IStudy } from "@/models/Study";
 
 
 export const useMutationCreateStudy = () => {
@@ -47,7 +47,24 @@ export const useQueryGetStudiesById = (studyId: number) => {  // Asegúrate de p
             }
             throw new Error('Error al obtener el estudio seleccionado');
         },
-        
+
         ...queriesConfig,
     });
 }
+
+export const useMutationUpdateStudyById = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: async (study: IStudy) => {
+            const res = await studyService.updateStudyById(study.id); // Corregido el uso de await
+            if (res.status === 200) {
+                return res.data;
+            }
+            throw new Error('Error al actualizar estudio');
+        },
+        onSuccess: async () => {
+            queryClient.invalidateQueries({ queryKey: [QueryKeys.GET_STUDY_BY_ID] }); // Corregido el uso de queryKey
+        },
+        ...queriesConfig
+    });
+};

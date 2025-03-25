@@ -22,6 +22,10 @@ class StudyService {
         return await this.restApiService.get<IStudy>(`studies/${studyId}`);
 
     }
+
+    public async updateStudyById(studyId: number){
+        return await this.restApiService.patch<IStudy>(`studies/${studyId}`);
+    }
 }
 
 export default new StudyService();
