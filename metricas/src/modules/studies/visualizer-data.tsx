@@ -18,7 +18,7 @@ const VisualizerData: React.FC = () => {
     const { data } = useQueryGetStudiesById(studyId);
     const mutation = useMutationUpdateStudyById();
     const { data: dataProgress } = useQueryGetProgressStages();
-    
+
 
     const [formData, setFormData] = useState({
         observation: '',
@@ -59,7 +59,7 @@ const VisualizerData: React.FC = () => {
         : null;
 
     return (
-        <div className='mt-4'>
+        <div className="max-w-[75%] mx-auto mt-4 p-2">
             <CustomHeader title="Detalles del estudio" />
 
             {/* Card para los detalles del estudio */}
@@ -187,7 +187,7 @@ const VisualizerData: React.FC = () => {
 
             {/* Card para los archivos */}
             {latestFile ? (
-                <Card className='mt-5 mb-4'>
+                <Card className='mt-4'>
                     <CardHeader>
                         <CardTitle>Datos del Archivo Más Reciente</CardTitle>
                     </CardHeader>

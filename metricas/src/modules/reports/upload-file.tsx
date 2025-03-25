@@ -57,7 +57,7 @@ const FileUploadDialog: React.FC<FileUploadDialogProps> = ({ onClose, studyId, c
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle className="text-center text-xl font-semibold">
-                        Subir Archivo Excel
+                        Subir Archivo (.csv)
                     </DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col gap-4 p-4">
