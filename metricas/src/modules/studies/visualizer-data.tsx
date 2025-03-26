@@ -19,6 +19,21 @@ const VisualizerData: React.FC = () => {
     const mutation = useMutationUpdateStudyById();
     const { data: dataProgress } = useQueryGetProgressStages();
 
+    const statusTranslations: Record<string, string> = {
+        "canceled": "Cancelado",
+        "completed": "Completado",
+        "in_process": "En proceso",
+        "in_review": "En revisión",
+        "pending": "Pendiente"
+    };
+
+    const translatedDataProgress = dataProgress?.map(stage => ({
+        id: stage.id,
+        name: statusTranslations[stage.name] || stage.name
+    }));
+
+
+
 
     const [formData, setFormData] = useState({
         observation: '',
@@ -146,13 +161,18 @@ const VisualizerData: React.FC = () => {
 
                                 <div className="mb-4">
                                     <label className="block font-medium">Estado de Progreso</label>
-                                    <select value={formData.progress_stage} onChange={(e) => setFormData({ ...formData, progress_stage: e.target.value })} className="w-full p-2 border border-gray-300 rounded-md">
+                                    <select
+                                        value={formData.progress_stage}
+                                        onChange={(e) => setFormData({ ...formData, progress_stage: e.target.value })}
+                                        className="w-full p-2 border border-gray-300 rounded-md"
+                                    >
                                         <option value="" disabled>Seleccionar estado...</option>
-                                        {dataProgress?.map((stage: { id: string, name: string }) => (
+                                        {translatedDataProgress?.map((stage) => (
                                             <option key={stage.id} value={stage.id}>{stage.name}</option>
                                         ))}
                                     </select>
                                 </div>
+
                             </div>
                         </div>
 
