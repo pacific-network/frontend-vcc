@@ -13,6 +13,14 @@ const ListStudies: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const { data: studiesData, isLoading } = UseQueryGetStudies(page, 10);
 
+    const statusTranslations: Record<string, string> = {
+        "canceled": "Cancelado",
+        "completed": "Completado",
+        "in_process": "En proceso",
+        "in_review": "En revisión",
+        "pending": "Pendiente"
+    };
+
     const columns = [
         'Id',
         'Estudio',
@@ -81,7 +89,9 @@ const ListStudies: React.FC = () => {
                                         <TableCell className="px-4 py-2">{study.id}</TableCell>
                                         <TableCell className="px-4 py-2">{study.name}</TableCell>
                                         <TableCell className="px-4 py-2">{study.client}</TableCell>
-                                        <TableCell className="px-4 py-2">{study.progress_stage}</TableCell>
+                                        <TableCell className="px-4 py-2">
+                                            {statusTranslations[study.progress_stage_name] || study.progress_stage_name}
+                                        </TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.start_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.end_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2 text-center">
