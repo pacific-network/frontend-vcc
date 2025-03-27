@@ -17,8 +17,8 @@ export interface IStudy {
     start_date: Date;
     end_date: Date;
     quantity: number;
-    observation: string;
-    progress_stage: string;
+    observaciones: [];
+    progress_stage: [];
     files: [];
 }
 
@@ -31,8 +31,8 @@ export interface GetStudyWithPagination {
 
 export interface updateStudy {
     id: number;  // Añadir el id del estudio
-    observation: string;
-    progress_stage: string;
+    observaciones: [];
+    progress_stage_id: number;
 }
 
 export interface ProgressStage {

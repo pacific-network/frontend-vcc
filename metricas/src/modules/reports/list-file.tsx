@@ -90,7 +90,7 @@ const ListStudies: React.FC = () => {
                                         <TableCell className="px-4 py-2">{study.name}</TableCell>
                                         <TableCell className="px-4 py-2">{study.client}</TableCell>
                                         <TableCell className="px-4 py-2">
-                                            {statusTranslations[study.progress_stage_name] || study.progress_stage_name}
+                                            {statusTranslations[study.progress_stage.name] || study.progress_stage_name}
                                         </TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.start_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.end_date).toLocaleDateString()}</TableCell>

@@ -18,6 +18,7 @@ const VisualizerData: React.FC = () => {
     const { data } = useQueryGetStudiesById(studyId);
     const mutation = useMutationUpdateStudyById();
     const { data: dataProgress } = useQueryGetProgressStages();
+    console.log(data);
 
     const statusTranslations: Record<string, string> = {
         "canceled": "Cancelado",
@@ -36,15 +37,15 @@ const VisualizerData: React.FC = () => {
 
 
     const [formData, setFormData] = useState({
-        observation: '',
-        progress_stage: ''
+        observaciones: [],  // Ahora es un array
+        progress_stage_id: "" // ID del estado de progreso
     });
 
     useEffect(() => {
         if (data) {
             setFormData({
-                observation: data.observation || '',
-                progress_stage: data.progress_stage || ''
+                observaciones: data.observaciones || [],
+                progress_stage_id: data.progress_stage?.id || ""
             });
         }
     }, [data]);
@@ -53,8 +54,8 @@ const VisualizerData: React.FC = () => {
         try {
             await mutation.mutateAsync({
                 id: studyId,
-                observation: formData.observation,
-                progress_stage: formData.progress_stage
+                progress_stage_id: formData.progress_stage_id, // ID numérico
+                observaciones: formData.observaciones // Array de observaciones
             });
             toast('Actualización exitosa');
         } catch (error) {
@@ -117,6 +118,8 @@ const VisualizerData: React.FC = () => {
                                     />
                                 </div>
 
+
+
                                 <div className="mb-4">
                                     <label className="block font-medium">Fecha de Inicio</label>
                                     <input
@@ -126,6 +129,25 @@ const VisualizerData: React.FC = () => {
                                         className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
                                     />
                                 </div>
+
+                                <div className="mt-6">
+                                    <label className="block font-medium">Lista de Observaciones</label>
+                                    <ul className="mt-3 list-disc list-inside">
+                                        {data.observaciones && data.observaciones.length > 0 ? (
+                                            data.observaciones.map((obs, index) => (
+                                                <li key={index} className="flex justify-between items-center">
+                                                    <span>
+                                                        {obs.fecha ? new Date(obs.fecha).toLocaleDateString() : '-'} - {obs.mensaje || 'Sin descripción'}
+                                                    </span>
+                                                </li>
+                                            ))
+                                        ) : (
+                                            <p className="mt-2 text-gray-500">No hay observaciones registradas.</p>
+                                        )}
+                                    </ul>
+                                </div>
+
+
                             </div>
 
                             {/* Columna derecha */}
@@ -151,27 +173,57 @@ const VisualizerData: React.FC = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label className="block font-medium">Observación</label>
+                                    <label className="block font-medium">Nueva Observación</label>
                                     <textarea
-                                        value={formData.observation}
-                                        onChange={(e) => setFormData({ ...formData, observation: e.target.value })}
+                                        value={formData.newObservation || ""}
+                                        onChange={(e) => setFormData({ ...formData, newObservation: e.target.value })}
                                         className="w-full p-2 border border-gray-300 rounded-md"
                                     />
+                                    <button
+                                        type="button"
+                                        className="mt-2 p-2 bg-blue-500 text-white rounded-md"
+                                        onClick={() => {
+                                            if (formData.newObservation) {
+                                                const newObservation = {
+                                                    fecha: new Date().toISOString(), // Fecha actual en formato ISO
+                                                    mensaje: formData.newObservation
+                                                };
+                                                setFormData({
+                                                    ...formData,
+                                                    observaciones: [...formData.observaciones, newObservation],
+                                                    newObservation: "" // Limpiar el campo
+                                                });
+                                            }
+                                        }}
+                                    >
+                                        Agregar Observación
+                                    </button>
                                 </div>
 
                                 <div className="mb-4">
                                     <label className="block font-medium">Estado de Progreso</label>
                                     <select
-                                        value={formData.progress_stage}
-                                        onChange={(e) => setFormData({ ...formData, progress_stage: e.target.value })}
+                                        value={formData.progress_stage_id}
+                                        onChange={(e) => {
+                                            const selectedStage = translatedDataProgress.find(stage => stage.id === parseInt(e.target.value));
+                                            setFormData({ ...formData, progress_stage_id: selectedStage?.id || "" });
+                                        }}
                                         className="w-full p-2 border border-gray-300 rounded-md"
                                     >
                                         <option value="" disabled>Seleccionar estado...</option>
                                         {translatedDataProgress?.map((stage) => (
-                                            <option key={stage.id} value={stage.id}>{stage.name}</option>
+                                            <option key={stage.id} value={stage.id}>
+                                                {stage.name}
+                                            </option>
                                         ))}
                                     </select>
                                 </div>
+
+
+
+
+
+
 
                             </div>
                         </div>
@@ -196,6 +248,7 @@ const VisualizerData: React.FC = () => {
                                 )}
                             </ul>
                         </div>
+
 
                         {/* Botón de actualización */}
                         <Button className="mt-6" type="button" onClick={handleUpdateStudy}>

@@ -23,7 +23,7 @@ class StudyService {
 
     }
 
-    public async updateStudyById(id: number, studyData: { observation: string; progress_stage: string }) {
+    public async updateStudyById(id: number, studyData: { observaciones: []; progress_stage_id: number }) {
         return await this.restApiService.patch<updateStudy>(`studies/${id}`, studyData);
     }
 
