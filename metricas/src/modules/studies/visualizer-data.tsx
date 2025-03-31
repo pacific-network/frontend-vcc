@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 const VisualizerData: React.FC = () => {
     const location = useLocation();
     const studyId = location.state?.studyId || null;
-    const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
+    const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);//2da card
 
     // Llamada a la API para obtener los datos del estudio
     const { data } = useQueryGetStudiesById(studyId);
@@ -129,23 +129,32 @@ const VisualizerData: React.FC = () => {
                                         className="w-full p-2 border border-gray-300 rounded-md bg-gray-200 cursor-not-allowed"
                                     />
                                 </div>
-
                                 <div className="mt-6">
-                                    <label className="block font-medium">Lista de Observaciones</label>
-                                    <ul className="mt-3 list-disc list-inside">
-                                        {data.observaciones && data.observaciones.length > 0 ? (
-                                            data.observaciones.map((obs, index) => (
-                                                <li key={index} className="flex justify-between items-center">
-                                                    <span>
-                                                        {obs.fecha ? new Date(obs.fecha).toLocaleDateString() : '-'} - {obs.mensaje || 'Sin descripción'}
-                                                    </span>
-                                                </li>
-                                            ))
-                                        ) : (
-                                            <p className="mt-2 text-gray-500">No hay observaciones registradas.</p>
-                                        )}
-                                    </ul>
+                                    jajaja
+                                    <Card>
+                                        <CardContent>
+                                            <ul className="mt-3 list-disc list-inside">
+                                                {files.length > 0 ? (
+                                                    files.map((file, index) => (
+                                                        <li key={index} className="flex justify-between items-center">
+                                                            <span>
+                                                                {file.date
+                                                                    ? new Date(file.date).toLocaleDateString()
+                                                                    : '-'}{' '}
+                                                                - {file.code || 'Sin nombre'}
+                                                            </span>
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <p className="mt-2 text-gray-500">No hay archivos subidos.</p>
+                                                )}
+                                            </ul>
+                                        </CardContent>
+                                    </Card>
                                 </div>
+
+
+
 
 
                             </div>
@@ -173,11 +182,12 @@ const VisualizerData: React.FC = () => {
                                 </div>
 
                                 <div className="mb-4">
-                                    <label className="block font-medium">Nueva Observación</label>
+                                    <label className="block font-medium" >Nueva Observación</label>
                                     <textarea
                                         value={formData.newObservation || ""}
                                         onChange={(e) => setFormData({ ...formData, newObservation: e.target.value })}
                                         className="w-full p-2 border border-gray-300 rounded-md"
+                                        placeholder='Tip: Escribe tu observación y agrégala antes de actualizar'
                                     />
                                     <button
                                         type="button"
@@ -198,6 +208,7 @@ const VisualizerData: React.FC = () => {
                                     >
                                         Agregar Observación
                                     </button>
+
                                 </div>
 
                                 <div className="mb-4">
@@ -219,6 +230,28 @@ const VisualizerData: React.FC = () => {
                                     </select>
                                 </div>
 
+                                <div className="mt-6">
+                                    <label className="block font-medium">Observaciones Registradas</label>
+                                    <Card>
+                                        <CardContent>
+                                            <ul className="mt-3 list-disc list-inside">
+                                                {data.observaciones && data.observaciones.length > 0 ? (
+                                                    data.observaciones.map((obs, index) => (
+                                                        <li key={index} className="flex justify-between items-center">
+                                                            <span>
+                                                                {obs.fecha ? new Date(obs.fecha).toLocaleDateString() : '-'} - {obs.mensaje || 'Sin descripción'}
+                                                            </span>
+                                                        </li>
+                                                    ))
+                                                ) : (
+                                                    <p className="mt-2 text-gray-500">No hay observaciones registradas.</p>
+                                                )}
+                                            </ul>
+                                        </CardContent>
+
+                                    </Card>
+                                </div>
+
 
 
 
@@ -228,26 +261,7 @@ const VisualizerData: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Archivos subidos */}
-                        <div className="mt-6">
-                            <label className="block font-medium">Archivos subidos</label>
-                            <ul className="mt-3 list-disc list-inside">
-                                {files.length > 0 ? (
-                                    files.map((file, index) => (
-                                        <li key={index} className="flex justify-between items-center">
-                                            <span>
-                                                {file.date
-                                                    ? new Date(file.date).toLocaleDateString()
-                                                    : '-'}{' '}
-                                                - {file.code || 'Sin nombre'}
-                                            </span>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <p className="mt-2 text-gray-500">No hay archivos subidos.</p>
-                                )}
-                            </ul>
-                        </div>
+
 
 
                         {/* Botón de actualización */}
