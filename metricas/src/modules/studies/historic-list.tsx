@@ -4,10 +4,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import CustomHeader from '@/components/custom-header';
 import { Card, CardContent } from "@/components/ui/card";
 import { Pagination } from '@/components/ui/pagination'; // Asegúrate de tener un componente de paginación
+import { Button } from '@/components/ui/button';
 
 const HistoricList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize] = useState(10);
+    const pageSize = 10;
 
     const { data: studiesData } = UseQueryGetStudies(currentPage, pageSize);
 
@@ -17,6 +18,14 @@ const HistoricList: React.FC = () => {
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
+    const handleNextPage = () => {
+        if (currentPage < Math.ceil(totalItems / pageSize)) setCurrentPage(currentPage + 1);
     };
 
     return (
@@ -32,7 +41,6 @@ const HistoricList: React.FC = () => {
                                 <TableHead>Estudio</TableHead>
                                 <TableHead>Cliente</TableHead>
                                 <TableHead>Fecha Termino</TableHead>
-                                <TableHead>Estado</TableHead>
                                 <TableHead>Fecha Completado</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -45,7 +53,7 @@ const HistoricList: React.FC = () => {
                                         <TableCell>{study.name}</TableCell>
                                         <TableCell>{study.client}</TableCell>
                                         <TableCell>{study.end_date ? new Date(study.end_date).toLocaleDateString() : "N/A"}</TableCell>
-                                        <TableCell>{study.progress_stage?.name || "Unknown"}</TableCell>
+                                        <TableCell>{study.completed_at ? new Date(study.completed_at).toLocaleDateString() : "N/A"}</TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>
@@ -58,6 +66,22 @@ const HistoricList: React.FC = () => {
                     />
                 </CardContent>
             </Card>
+            <div className="flex justify-between mt-4">
+                <Button
+                    onClick={handlePreviousPage}
+                    disabled={currentPage === 1}
+                    variant="default"
+                >
+                    Anterior
+                </Button>
+                <Button
+                    onClick={handleNextPage}
+                    disabled={currentPage >= Math.ceil(totalItems / pageSize)}
+                    variant="default"
+                >
+                    Siguiente
+                </Button>
+            </div>
         </div>
     );
 };

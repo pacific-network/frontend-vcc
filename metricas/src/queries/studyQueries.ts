@@ -69,7 +69,7 @@ export const useMutationUpdateStudyById = () => {
     });
 };
 
-export const useQueryGetProgressStages = () => {   
+export const useQueryGetProgressStages = () => {
     return useQuery({
         queryKey: [QueryKeys.GET_PROGRESS_STAGES],
         queryFn: async () => {

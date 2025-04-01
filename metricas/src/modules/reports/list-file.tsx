@@ -41,11 +41,13 @@ const ListStudies: React.FC = () => {
         navigate('/data-studies', { state: { studyId } });
     };
 
-    // Filtrar estudios por nombre o cliente
-    const filteredStudies = studiesData?.data?.filter((study) =>
-        study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        study.client.toLowerCase().includes(searchTerm.toLowerCase())
-    ) || [];
+    // Filtrar estudios por nombre o cliente y excluir progress_stage_id === 4
+    const filteredStudies = studiesData?.data
+        ?.filter((study) =>
+            (study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                study.client.toLowerCase().includes(searchTerm.toLowerCase())) &&
+            study.progress_stage.id !== 4 // Asegúrate de que progress_stage_id esté correctamente definido
+        ) || [];
 
     return (
         <div className='size-full p-10'>
@@ -128,7 +130,7 @@ const ListStudies: React.FC = () => {
                         </span>
                         <Button
                             variant="outline"
-                            disabled={page >= studiesData?.meta.pageCount}
+                            disabled={page >= (studiesData?.meta.pageCount || 1)}
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Siguiente

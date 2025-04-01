@@ -6,8 +6,9 @@ export interface CreateStudyDto {
     start_date: Date;
     end_date: Date;
     quantity: number;
-    observation: string;
-    progress_stage: string;
+    observation: [];
+    progress_stage: [];
+    price: string;
 }
 
 export interface IStudy {
@@ -20,6 +21,7 @@ export interface IStudy {
     observaciones: [];
     progress_stage: [];
     files: [];
+    completed_at: Date;
 }
 
 

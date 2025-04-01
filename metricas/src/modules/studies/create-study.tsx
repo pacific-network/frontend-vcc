@@ -16,9 +16,12 @@ const CreateStudyForm: FC = () => {
         client: "",
         start_date: "",
         end_date: "",
-        quantity: "",
-        observation: "",
-        price: "",
+        quantity: '',
+        observaciones: [], // Debe ser un array de objetos
+        price: '',
+        progress_stage_id: 1, // Se asegura que no esté vacío
+        is_complete: false, // Nombre corregido
+        completed_at: new Date().toISOString().slice(0, 19).replace("T", " "), // Asegura formato ISO 8601
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -28,30 +31,36 @@ const CreateStudyForm: FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: name === "quantity" ? Number(value) : value, // Convierte quantity a número
-        });
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === "quantity" || name === "price" ? Number(value) : value,
+        }));
     };
 
     const handleClientChange = (value: string) => {
-        setFormData({
-            ...formData,
-            client: value,
-        });
+        setFormData((prev) => ({ ...prev, client: value }));
+    };
+
+    const handleObservationChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const { value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            observaciones: [{ fecha: new Date().toISOString(), mensaje: value }],
+        }));
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         const payload = {
             ...formData,
-            quantity: Number(formData.quantity), // Asegurar que sea número
-            progress_stage: "en progreso", // Valor por defecto
+            quantity: Number(formData.quantity),
+            price: Number(formData.price),
         };
+
         mutate(payload, {
             onSuccess: () => {
                 setFormData(initialFormData);
-                toast("Estudio creado exitosamente"); // Resetea el formulario después de un envío exitoso
+                toast("Estudio creado exitosamente");
             },
         });
     };
@@ -70,7 +79,7 @@ const CreateStudyForm: FC = () => {
                         <Select onValueChange={handleClientChange} value={formData.client}>
                             <SelectTrigger className="w-full">
                                 <SelectValue placeholder="Selecciona un cliente" />
-                            </SelectTrigger >
+                            </SelectTrigger>
                             <SelectContent>
                                 {clients?.data?.map((client) => (
                                     <SelectItem key={client.id} value={client.name}>
@@ -82,9 +91,10 @@ const CreateStudyForm: FC = () => {
 
                         <Input type="date" name="start_date" value={formData.start_date} onChange={handleChange} required />
                         <Input type="date" name="end_date" value={formData.end_date} onChange={handleChange} required />
-                        <Input type="number" name="quantity" value={formData.quantity} onChange={handleChange} placeholder="Cantidad de contactos a realizar" required />
+                        <Input type="number" name="quantity" value={formData.quantity} onChange={handleChange} placeholder="Cantidad de contactos" required />
                         <Input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Valor encuesta" required />
-                        <Textarea name="observation" value={formData.observation} onChange={handleChange} placeholder="Observaciones" rows={3} required />
+                        <Textarea name="observaciones" onChange={handleObservationChange} placeholder="Observaciones" rows={3} />
+
                         <Button type="submit" className="w-full">Enviar</Button>
                     </form>
                 </CardContent>
