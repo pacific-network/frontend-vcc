@@ -20,4 +20,7 @@ export enum QueryKeys {
 
     //Progress Stages
     GET_PROGRESS_STAGES = 'GET_PROGRESS_STAGES',
+
+    //Total Prices 
+    GET_TOTAL_PRICES = 'GET_TOTAL_PRICES',
 }

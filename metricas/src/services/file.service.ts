@@ -13,6 +13,8 @@ class FileService {
     public async uploadFile(data: FormData) {
         return this.restApiService.post<File>(`files/upload`, data)
     }
+
+    
 }
 
 export default new FileService();

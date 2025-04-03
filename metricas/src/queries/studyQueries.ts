@@ -5,6 +5,7 @@ import { QueryKeys } from "./queryKeys";
 import { CreateStudyDto, updateStudy } from "@/models/Study";
 
 
+
 export const useMutationCreateStudy = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -78,6 +79,19 @@ export const useQueryGetProgressStages = () => {
                 return res.data;
             }
             throw new Error('Error al obtener las etapas de progreso');
+        },
+        ...queriesConfig
+    });
+}
+export const useQueryGetTotalPrices = (page: number, take: number) => {
+    return useQuery({
+        queryKey: [QueryKeys.GET_TOTAL_PRICES, page, take],
+        queryFn: async () => {
+            const res = await studyService.getTotalPrices(page, take);
+            if (res.status === 200) {
+                return res.data; // ⚠️ Asegurar que se accede a `data.data`
+            }
+            throw new Error('Error al obtener los precios totales');
         },
         ...queriesConfig
     });

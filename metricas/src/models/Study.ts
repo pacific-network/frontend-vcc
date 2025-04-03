@@ -41,3 +41,25 @@ export interface ProgressStage {
     id: number;
     name: string;
 }
+
+export interface StudyPrice {
+    id: number;
+    name: string;
+    client: string;
+    start_date: string; // Assuming this is a string in ISO format
+    end_date: string;   // Assuming this is a string in ISO format
+    quantity: number;
+    observaciones: [];
+    price: number;
+    is_complete: boolean;
+    completed_at: string; // Assuming this is a string in ISO format
+    progress_stage: [];
+    files: [];
+    totalPrice: number;
+}
+
+export interface PriceWithPagination {
+    data: StudyPrice[];
+    meta: PaginationMetaData;
+    totalPrice: number;
+}
