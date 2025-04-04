@@ -32,7 +32,7 @@ const ListStudies: React.FC = () => {
     ];
 
     const handlePageChange = (newPage: number) => {
-        if (newPage > 0 && newPage <= (studiesData?.meta.pageCount || 1)) {
+        if (newPage > 0 && newPage <= (studiesData?.meta?.pageCount || 1)) {
             setPage(newPage);
         }
     };
@@ -41,13 +41,12 @@ const ListStudies: React.FC = () => {
         navigate('/data-studies', { state: { studyId } });
     };
 
-    // Filtrar estudios por nombre o cliente y excluir progress_stage_id === 4
-    const filteredStudies = studiesData?.data
-        ?.filter((study) =>
-            (study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                study.client.toLowerCase().includes(searchTerm.toLowerCase())) &&
-            study.progress_stage.id !== 4 // Asegúrate de que progress_stage_id esté correctamente definido
-        ) || [];
+    // Filtrar estudios por nombre o cliente y excluir progress_stage.id === 4
+    const filteredStudies = studiesData?.data?.filter(study =>
+        (study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            study.client.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        study.progress_stage?.id !== 4
+    ) || [];
 
     return (
         <div className='size-full p-10'>
@@ -92,7 +91,7 @@ const ListStudies: React.FC = () => {
                                         <TableCell className="px-4 py-2">{study.name}</TableCell>
                                         <TableCell className="px-4 py-2">{study.client}</TableCell>
                                         <TableCell className="px-4 py-2">
-                                            {statusTranslations[study.progress_stage.name] || study.progress_stage_name}
+                                            {statusTranslations[study.progress_stage?.name] || study.progress_stage?.name}
                                         </TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.start_date).toLocaleDateString()}</TableCell>
                                         <TableCell className="px-4 py-2">{new Date(study.end_date).toLocaleDateString()}</TableCell>
@@ -126,11 +125,11 @@ const ListStudies: React.FC = () => {
                             Anterior
                         </Button>
                         <span>
-                            Página {page} de {studiesData?.meta.pageCount}
+                            Página {page} de {studiesData?.meta?.pageCount || 1}
                         </span>
                         <Button
                             variant="outline"
-                            disabled={page >= (studiesData?.meta.pageCount || 1)}
+                            disabled={page >= (studiesData?.meta?.pageCount || 1)}
                             onClick={() => handlePageChange(page + 1)}
                         >
                             Siguiente

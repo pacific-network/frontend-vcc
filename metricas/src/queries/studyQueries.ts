@@ -6,6 +6,7 @@ import { CreateStudyDto, updateStudy } from "@/models/Study";
 
 
 
+
 export const useMutationCreateStudy = () => {
     const queryClient = useQueryClient();
     return useMutation({

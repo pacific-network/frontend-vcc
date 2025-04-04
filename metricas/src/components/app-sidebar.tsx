@@ -1,5 +1,5 @@
 import { DatabaseBackup, Home, BarChart2, BookPlus, Settings, User2, ChevronUp, ChartNoAxesCombined, UserRoundCog, Handshake, LayoutDashboard } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     Sidebar,
     SidebarContent,
@@ -51,7 +51,14 @@ const menuItems = [
 ];
 
 export function AppSidebar() {
+    const navigate = useNavigate();
 
+    const handleLogout = () => {
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("auth_token");
+        localStorage.removeItem("isAuthenticated");
+        navigate("/login");
+    };
 
     return (
         <Sidebar className="bg-gray-800 text-black w-64 h-full flex flex-col">
@@ -114,10 +121,7 @@ export function AppSidebar() {
                                 <DropdownMenuItem>
                                     <span>Cuenta</span>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <span>Facturación</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleLogout}>
                                     <span>Cerrar sesión</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

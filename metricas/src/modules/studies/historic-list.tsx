@@ -14,7 +14,7 @@ const HistoricList: React.FC = () => {
 
     console.log("Studies Data:", studiesData);
     const studies = studiesData?.data || [];
-    const totalItems = studiesData?.total || 0;
+    const totalItems = studiesData?.meta.itemCount || 0;
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
