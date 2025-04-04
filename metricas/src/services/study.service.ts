@@ -14,8 +14,13 @@ class StudyService {
         return this.restApiService.post<CreateStudyDto>('studies', study);
     }
 
-    public async getStudies(page: number, take: number) {
-        return this.restApiService.get<GetStudyWithPagination>(`/studies?page=${page}&take=${take}`);
+    // public async getStudies(page: number, take: number) {
+    //     return this.restApiService.get<GetStudyWithPagination>(`/studies?page=${page}&take=${take}`);
+    // }
+
+    public async getStudies(page: number, take: number, searchQuery: string) {
+        const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
+        return this.restApiService.get<GetStudyWithPagination>(`/studies?page=${page}&take=${take}${searchParam}`);
     }
 
     public async getStudyById(studyId: number) {
@@ -31,9 +36,23 @@ class StudyService {
         return this.restApiService.get<ProgressStage>('clients/progress');
     }
 
-    public async getTotalPrices(page: number, take: number) {
-        return this.restApiService.get<PriceWithPagination>(`clients/price?page=${page}&take=${take}`);
+    // public async getTotalPrices(page: number, take: number) {
+    //     return this.restApiService.get<PriceWithPagination>(`clients/price?page=${page}&take=${take}`);
+    // }
+
+    public async getTotalPrices(page: number, take: number, searchQuery?: string) {
+        const params = new URLSearchParams({
+            page: page.toString(),
+            take: take.toString(),
+        });
+
+        if (searchQuery) {
+            params.append("q", searchQuery); // Solo agrega `q` si hay un término de búsqueda
+        }
+
+        return this.restApiService.get<PriceWithPagination>(`clients/price?${params.toString()}`);
     }
+
 }
 
 export default new StudyService();

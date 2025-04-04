@@ -25,11 +25,25 @@ export const useMutationCreateStudy = () => {
 }
 
 
-export const UseQueryGetStudies = (page: number, take: number) => {
+// export const UseQueryGetStudies = (page: number, take: number) => {
+//     return useQuery({
+//         queryKey: [QueryKeys.GET_ALL_STUDIES, page, take], // Agregar page y take a la cache
+//         queryFn: async () => {
+//             const res = await studyService.getStudies(page, take);
+//             if (res.status === 200) {
+//                 return res.data;
+//             }
+//             throw new Error('Error al obtener los estudios');
+//         },
+//         ...queriesConfig
+//     });
+// };
+
+export const UseQueryGetStudies = (page: number, take: number, searchQuery: string) => {
     return useQuery({
-        queryKey: [QueryKeys.GET_ALL_STUDIES, page, take], // Agregar page y take a la cache
+        queryKey: [QueryKeys.GET_ALL_STUDIES, page, take, searchQuery],
         queryFn: async () => {
-            const res = await studyService.getStudies(page, take);
+            const res = await studyService.getStudies(page, take, searchQuery);
             if (res.status === 200) {
                 return res.data;
             }
@@ -38,6 +52,7 @@ export const UseQueryGetStudies = (page: number, take: number) => {
         ...queriesConfig
     });
 };
+
 
 export const useQueryGetStudiesById = (studyId: number) => {  // Asegúrate de pasar el studyId como parámetro
     return useQuery({
@@ -84,11 +99,12 @@ export const useQueryGetProgressStages = () => {
         ...queriesConfig
     });
 }
-export const useQueryGetTotalPrices = (page: number, take: number) => {
+
+export const useQueryGetTotalPrices = (page: number, take: number, searchQuery?: string) => {
     return useQuery({
-        queryKey: [QueryKeys.GET_TOTAL_PRICES, page, take],
+        queryKey: [QueryKeys.GET_TOTAL_PRICES, page, take, searchQuery], // Agregar `searchQuery`
         queryFn: async () => {
-            const res = await studyService.getTotalPrices(page, take);
+            const res = await studyService.getTotalPrices(page, take, searchQuery);
             if (res.status === 200) {
                 return res.data; // ⚠️ Asegurar que se accede a `data.data`
             }
@@ -96,4 +112,18 @@ export const useQueryGetTotalPrices = (page: number, take: number) => {
         },
         ...queriesConfig
     });
-}
+};
+
+// export const useQueryGetTotalPrices = (page: number, take: number) => {
+//     return useQuery({
+//         queryKey: [QueryKeys.GET_TOTAL_PRICES, page, take],
+//         queryFn: async () => {
+//             const res = await studyService.getTotalPrices(page, take);
+//             if (res.status === 200) {
+//                 return res.data; // ⚠️ Asegurar que se accede a `data.data`
+//             }
+//             throw new Error('Error al obtener los precios totales');
+//         },
+//         ...queriesConfig
+//     });
+// }

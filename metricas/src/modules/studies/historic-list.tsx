@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UseQueryGetStudies } from '@/queries/studyQueries';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import CustomHeader from '@/components/custom-header';
 import { Card, CardContent } from "@/components/ui/card";
-import { Pagination } from '@/components/ui/pagination'; // Asegúrate de tener un componente de paginación
+import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input"; // Asegúrate de importar el componente de input
 
 const HistoricList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+
     const pageSize = 10;
 
-    const { data: studiesData } = UseQueryGetStudies(currentPage, pageSize);
+    // Debounce para evitar llamadas constantes al escribir
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 500); // Espera 500ms después de que el usuario deje de escribir
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
+    const { data: studiesData } = UseQueryGetStudies(currentPage, pageSize, debouncedSearch);
 
     console.log("Studies Data:", studiesData);
     const studies = studiesData?.data || [];
@@ -30,7 +42,18 @@ const HistoricList: React.FC = () => {
 
     return (
         <div className="size-full p-10">
-            <CustomHeader title={'Estudios Completados'} />
+            <CustomHeader title="Estudios Completados" />
+
+            {/* Barra de búsqueda */}
+            <div className="flex mb-4">
+                <Input
+                    type="text"
+                    placeholder="Buscar estudio..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full max-w-md"
+                />
+            </div>
 
             <Card className="mt-4 shadow-lg">
                 <CardContent className="p-4">
@@ -66,6 +89,8 @@ const HistoricList: React.FC = () => {
                     />
                 </CardContent>
             </Card>
+
+            {/* Botones de paginación */}
             <div className="flex justify-between mt-4">
                 <Button
                     onClick={handlePreviousPage}
