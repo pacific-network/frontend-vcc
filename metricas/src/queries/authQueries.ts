@@ -16,7 +16,7 @@ export const useMutationLogin = () => {
     return useMutation<LoginResponse, Error, LoginVariables>({
         mutationFn: async ({ username, password }) => {
             const res = await authService.login(username, password);
-            if (res.status === 200 || res.status === 201) {
+            if (res.status === 200) {
                 return res.data;
             }
             throw new Error('Error al iniciar sesión');
