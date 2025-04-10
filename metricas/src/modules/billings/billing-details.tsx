@@ -37,7 +37,7 @@ const DetailBilling: FC = () => {
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
-                                <span className="text-lg font-semibold">Cantidad de llamadas a realizar</span>
+                                <span className="text-lg font-semibold">Total Llamadas Realizadas</span>
                                 <span className="text-xl font-bold text-blue-600">
                                     {data?.quantity || "No disponible"}
                                 </span>

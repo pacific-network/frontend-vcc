@@ -18,6 +18,7 @@ import DetailStudy from "./pages/details-study.page.tsx";
 import Home from "./pages/home.page.tsx";
 import HistoricPage from "./pages/historic.page.tsx";
 import DetailBilling from "./modules/billings/billing-details.tsx";
+import HomeSupervisor from "./pages/home-supervisor.page.tsx";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <Route path="/data-studies" element={<PrivateRoute>< DetailStudy /></PrivateRoute>} />
             <Route path="/completed" element={<PrivateRoute>< HistoricPage /></PrivateRoute>} />
             <Route path="/detail-billing" element={<PrivateRoute>< DetailBilling /></PrivateRoute>} />
+            <Route path="/home" element={<PrivateRoute>< HomeSupervisor/></PrivateRoute>} />
 
 
           </Routes>
