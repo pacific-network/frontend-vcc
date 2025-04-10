@@ -4,7 +4,7 @@ import { UseQueryGetStudies } from "@/queries/studyQueries";
 
 const ActiveStudies = () => {
     // Llamamos a la query para obtener todos los estudios
-    const { data, isLoading, error } = UseQueryGetStudies(1, 10);
+    const { data, isLoading, error } = UseQueryGetStudies(1, 10, "");
 
     // Filtramos solo los estudios con progress_stage.id === 1
     const filteredStudies = data?.data?.filter(study => study.progress_stage?.id === 1) || [];

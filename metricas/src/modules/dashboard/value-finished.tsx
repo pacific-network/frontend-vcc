@@ -31,7 +31,7 @@ const ValueFinished = () => {
     };
 
     return (
-        <DashboardCard title="Valor Total Estudio" icon={<Wallet className="w-6 h-6 text-blue-600" />}>
+        <DashboardCard title="Valor Estudio (Ultimo Reporte)" icon={<Wallet className="w-6 h-6 text-blue-600" />}>
             {/* Input de búsqueda */}
             <div className="mb-4">
                 <Input

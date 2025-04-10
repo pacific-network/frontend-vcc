@@ -5,46 +5,40 @@ import CustomHeader from '@/components/custom-header';
 import { Card, CardContent } from "@/components/ui/card";
 import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input"; // Asegúrate de importar el componente de input
+import { Input } from "@/components/ui/input";
+import { useNavigate } from 'react-router-dom';
 
 const HistoricList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const navigate = useNavigate();
 
     const pageSize = 10;
 
-    // Debounce para evitar llamadas constantes al escribir
     useEffect(() => {
         const handler = setTimeout(() => {
             setDebouncedSearch(searchQuery);
-        }, 500); // Espera 500ms después de que el usuario deje de escribir
+        }, 500);
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
     const { data: studiesData } = UseQueryGetStudies(currentPage, pageSize, debouncedSearch);
-
-    console.log("Studies Data:", studiesData);
     const studies = studiesData?.data || [];
     const totalItems = studiesData?.meta.itemCount || 0;
 
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
+    const handlePageChange = (page: number) => setCurrentPage(page);
+    const handlePreviousPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+    const handleNextPage = () => currentPage < Math.ceil(totalItems / pageSize) && setCurrentPage(currentPage + 1);
 
-    const handlePreviousPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
-    };
-
-    const handleNextPage = () => {
-        if (currentPage < Math.ceil(totalItems / pageSize)) setCurrentPage(currentPage + 1);
+    const handleDetailClick = (studyId: number) => {
+        navigate('/detail-billing', { state: { studyId } }); // 👈 Pasamos el ID por estado
     };
 
     return (
         <div className="size-full p-10">
             <CustomHeader title="Estudios Completados" />
 
-            {/* Barra de búsqueda */}
             <div className="flex mb-4">
                 <Input
                     type="text"
@@ -65,6 +59,7 @@ const HistoricList: React.FC = () => {
                                 <TableHead>Cliente</TableHead>
                                 <TableHead>Fecha Termino</TableHead>
                                 <TableHead>Fecha Completado</TableHead>
+                                <TableHead>Acciones</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -77,10 +72,16 @@ const HistoricList: React.FC = () => {
                                         <TableCell>{study.client}</TableCell>
                                         <TableCell>{study.end_date ? new Date(study.end_date).toLocaleDateString() : "N/A"}</TableCell>
                                         <TableCell>{study.completed_at ? new Date(study.completed_at).toLocaleDateString() : "N/A"}</TableCell>
+                                        <TableCell>
+                                            <Button variant="outline" onClick={() => handleDetailClick(study.id)}>
+                                                Ver Detalle
+                                            </Button>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>
                     </Table>
+
                     <Pagination
                         currentPage={currentPage}
                         totalItems={totalItems}
@@ -90,20 +91,11 @@ const HistoricList: React.FC = () => {
                 </CardContent>
             </Card>
 
-            {/* Botones de paginación */}
             <div className="flex justify-between mt-4">
-                <Button
-                    onClick={handlePreviousPage}
-                    disabled={currentPage === 1}
-                    variant="default"
-                >
+                <Button onClick={handlePreviousPage} disabled={currentPage === 1} variant="default">
                     Anterior
                 </Button>
-                <Button
-                    onClick={handleNextPage}
-                    disabled={currentPage >= Math.ceil(totalItems / pageSize)}
-                    variant="default"
-                >
+                <Button onClick={handleNextPage} disabled={currentPage >= Math.ceil(totalItems / pageSize)} variant="default">
                     Siguiente
                 </Button>
             </div>
