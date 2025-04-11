@@ -25,25 +25,25 @@ const DetailBilling: FC = () => {
             <div className="size-full p-10">
                 <CustomHeader title="Detalle de Facturación" />
                 <Card>
-                    <CardTitle className="text-center text-2xl font-bold mb-4">
+                    <CardTitle className="text-center  text-xl mb-4">
                         Detalles del Estudio
                     </CardTitle>
                     <CardContent>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
-                                <span className="text-lg font-semibold">Mes</span>
+                                <span >Mes</span>
                                 <span className="text-xl font-bold text-blue-600">
                                     {data?.month || "No disponible"}
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
-                                <span className="text-lg font-semibold">Total Llamadas Realizadas</span>
+                                <span >Total Llamadas Realizadas</span>
                                 <span className="text-xl font-bold text-blue-600">
                                     {data?.quantity || "No disponible"}
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
-                                <span className="text-lg font-semibold">Monto Total Mes</span>
+                                <span >Monto Total Mes</span>
                                 <span className="text-xl font-bold text-blue-600">
                                     {data?.total || "No disponible"}
                                 </span>
@@ -54,7 +54,7 @@ const DetailBilling: FC = () => {
 
                 {/* Gráfico */}
                 <Card>
-                    <CardTitle className="text-center text-2xl font-bold mb-4">
+                    <CardTitle className="text-center text-xl mb-4">
                         Gráfico de Llamadas y Monto Diario
                     </CardTitle>
                     <CardContent>
