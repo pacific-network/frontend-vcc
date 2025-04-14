@@ -20,6 +20,7 @@ import HistoricPage from "./pages/historic.page.tsx";
 import DetailBilling from "./modules/billings/billing-details.tsx";
 import HomeSupervisor from "./pages/home-supervisor.page.tsx";
 
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

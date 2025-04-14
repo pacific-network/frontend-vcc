@@ -9,6 +9,8 @@ import CustomHeader from "@/components/custom-header";
 import { useMutationCreateStudy } from "@/queries/studyQueries";
 import { toast } from "sonner";
 import { UseQueryGetClients } from "@/queries/clientQueries";
+import { useNavigate } from "react-router-dom";
+
 
 const CreateStudyForm: FC = () => {
     const initialFormData = {
@@ -25,7 +27,7 @@ const CreateStudyForm: FC = () => {
     };
 
     const [formData, setFormData] = useState(initialFormData);
-
+    const navigate = useNavigate();
     const { mutate } = useMutationCreateStudy();
     const { data: clients } = UseQueryGetClients(1, 10);
 
@@ -61,6 +63,7 @@ const CreateStudyForm: FC = () => {
             onSuccess: () => {
                 setFormData(initialFormData);
                 toast("Estudio creado exitosamente");
+                navigate("/list");
             },
         });
     };

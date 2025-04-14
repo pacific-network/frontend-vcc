@@ -26,7 +26,7 @@ const BillingPreviousMonth = () => {
                             Facturación de {getMonthName(data.month)} {data.month}
                         </h2>
                         <div className="text-xl font-bold text-green-500">
-                            ${data.total.toLocaleString('es-CL')}
+                            ${Math.floor(data.total).toLocaleString('es-CL')}
                         </div>
                         <div className="text-sm text-gray-600">
                             Total facturado en el mes
