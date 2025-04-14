@@ -20,6 +20,10 @@ class BillingService {
     public async detailBillingById(studyId: number) {
         return this.restApiService(`billing/${studyId}`);
     }
+
+    public async remaining_billing(studyId: number) {
+        return this.restApiService(`billing/remaining-billing/${studyId}`);
+    }
 }
 
 export default new BillingService();

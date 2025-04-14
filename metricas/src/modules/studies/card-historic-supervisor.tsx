@@ -47,7 +47,7 @@ const HistoricSupervisor: React.FC = () => {
                     />
                 </div>
 
-                <Card className="mt-4 shadow-lg">
+                <Card className="mt-4 mr-4 shadow-lg">
                     <CardContent className="p-4">
                         <Table>
                             <TableHeader>

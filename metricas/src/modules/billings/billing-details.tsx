@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { useLocation } from "react-router-dom";
-import { useQueryDetailBillingById } from "@/queries/billingQueries";
+import { useQueryDetailBillingById, useQueryRemainingBilling } from "@/queries/billingQueries";
 import Layout from "@/pages/layout.page";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import CustomHeader from "@/components/custom-header";
@@ -12,6 +12,11 @@ const DetailBilling: FC = () => {
     const studyId = location.state?.studyId;
 
     const { data } = useQueryDetailBillingById(studyId);
+    const { data: remaining } = useQueryRemainingBilling(studyId);
+    console.log("remaining", remaining);
+    const formatCurrency = (value: number) => {
+        return new Intl.NumberFormat('es-CL').format(value);
+    };
 
     // Transformar los datos para el gráfico
     const chartData = Object.keys(data?.data || {}).map(date => ({
@@ -45,9 +50,34 @@ const DetailBilling: FC = () => {
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
                                 <span >Monto Total Mes</span>
                                 <span className="text-xl font-bold text-blue-600">
-                                    {data?.total || "No disponible"}
+                                    {data?.total ? formatCurrency(data.total) : "No disponible"}
+                                </span>
+
+                            </div>
+                            {/* RESTANTE MES */}
+                            <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                                <span>Total Llamadas Restantes</span>
+                                <span className="text-xl font-bold text-blue-600">
+                                    {remaining?.[0]?.remainingCalls ?? "0"}
                                 </span>
                             </div>
+                            <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                                <span>Cuota Estudio</span>
+                                <span className="text-xl font-bold text-blue-600">
+                                    {remaining?.[0]?.pricePerCall ?? "Completada"}
+                                </span>
+                            </div>
+                            <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
+                                <span>Monto Total Llamadas Restantes</span>
+                                <span className="text-xl font-bold text-blue-600">
+                                    {remaining?.[0]?.amount !== undefined
+                                        ? formatCurrency(remaining[0].amount)
+                                        : "Sin Monto"}
+                                </span>
+                            </div>
+
+
+
                         </div>
                     </CardContent>
                 </Card>

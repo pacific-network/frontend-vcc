@@ -34,8 +34,8 @@ const menuItems = [
         title: "Estudios",
         icon: ChartNoAxesCombined,
         subMenu: [
-            { title: "Ver Estudios", url: "/list", icon: BarChart2 },
             { title: "Crear Estudio", url: '/create-study', icon: BookPlus },
+            { title: "Estudios Activos", url: "/list", icon: BarChart2 },
             { title: "Historico Estudios", url: "/completed", icon: DatabaseBackup }
 
         ],
