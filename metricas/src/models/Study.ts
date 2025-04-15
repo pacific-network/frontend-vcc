@@ -19,7 +19,10 @@ export interface IStudy {
     end_date: Date;
     quantity: number;
     observaciones: [];
-    progress_stage: [];
+    progress_stage: {
+        id: number;
+        name: string;
+    };
     files: [];
     completed_at: Date;
 }

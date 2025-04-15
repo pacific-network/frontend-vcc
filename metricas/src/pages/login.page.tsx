@@ -59,6 +59,7 @@ const Login: FC = () => {
                     toast.error("No se recibió un token de autenticación.");
                 }
             },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onError: (err: any) => {
                 console.error("Error en el login:", err);
                 if (err?.response?.status === 401) {

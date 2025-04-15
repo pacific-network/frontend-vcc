@@ -19,8 +19,11 @@ export const useMutationLogin = () => {
             const res = await authService.login(username, password);
             if (res.status === 200) {
                 return res.data;
+            } else if (res.status === 401) {
+                throw new Error("Nombre de usuario o contraseña incorrecta");
+            } else {
+                throw new Error("Error desconocido al iniciar sesión");
             }
-            throw new Error('Error al iniciar sesión');
         },
         ...queriesConfig,
     });

@@ -16,7 +16,7 @@ const HistoricList: React.FC = () => {
     const [userRole, setUserRole] = useState<number | null>(null); // 👈 estado para el rol
     const navigate = useNavigate();
 
-    const pageSize = 10;
+    const pageSize = 5;
 
     useEffect(() => {
         const handler = setTimeout(() => {
