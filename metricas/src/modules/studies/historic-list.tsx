@@ -7,11 +7,13 @@ import { Pagination } from '@/components/ui/pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { useNavigate } from 'react-router-dom';
+import { getUserRoleFromToken } from '@/utils/getUserFromToken'; // 👈 importa la función
 
 const HistoricList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [userRole, setUserRole] = useState<number | null>(null); // 👈 estado para el rol
     const navigate = useNavigate();
 
     const pageSize = 10;
@@ -23,6 +25,11 @@ const HistoricList: React.FC = () => {
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
+    useEffect(() => {
+        const role = getUserRoleFromToken();
+        setUserRole(role); // 👈 actualiza el rol al montar el componente
+    }, []);
+
     const { data: studiesData } = UseQueryGetStudies(currentPage, pageSize, debouncedSearch);
     const studies = studiesData?.data || [];
     const totalItems = studiesData?.meta.itemCount || 0;
@@ -32,7 +39,7 @@ const HistoricList: React.FC = () => {
     const handleNextPage = () => currentPage < Math.ceil(totalItems / pageSize) && setCurrentPage(currentPage + 1);
 
     const handleDetailClick = (studyId: number) => {
-        navigate('/detail-billing', { state: { studyId } }); // 👈 Pasamos el ID por estado
+        navigate('/detail-billing', { state: { studyId } });
     };
 
     return (
@@ -73,9 +80,11 @@ const HistoricList: React.FC = () => {
                                         <TableCell>{study.end_date ? new Date(study.end_date).toLocaleDateString() : "N/A"}</TableCell>
                                         <TableCell>{study.completed_at ? new Date(study.completed_at).toLocaleDateString() : "N/A"}</TableCell>
                                         <TableCell>
-                                            <Button variant="outline" onClick={() => handleDetailClick(study.id)}>
-                                                Ver Detalle
-                                            </Button>
+                                            {(userRole === 1 || userRole === 2) && (
+                                                <Button variant="outline" onClick={() => handleDetailClick(study.id)}>
+                                                    Ver Detalle
+                                                </Button>
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))}

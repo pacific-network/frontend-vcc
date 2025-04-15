@@ -5,6 +5,7 @@ import { QueryKeys } from './queryKeys';
 
 interface LoginResponse {
     access_token: string;
+    role: number;
     // Add any other properties that the login response might have
 }
 

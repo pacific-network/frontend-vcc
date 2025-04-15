@@ -4,7 +4,7 @@ import { AuthContext } from './authContext';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true); // Para evitar redirección antes de cargar
+
 
     // Cargar estado desde localStorage
     useEffect(() => {
@@ -12,7 +12,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (storedAuth === 'true') {
             setIsAuthenticated(true);
         }
-        setLoading(false);
     }, []);
 
     const login = () => {
@@ -25,9 +24,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('isAuthenticated'); // Eliminamos de localStorage
     };
 
-    if (loading) {
-        return <p>Cargando...</p>; // Evita renderizar antes de cargar el estado
-    }
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, login, logout }}>

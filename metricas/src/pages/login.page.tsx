@@ -10,7 +10,9 @@ import { Eye, EyeOff } from "lucide-react";
 import { RestApiService } from "@/services/restApi.service";
 import { useAuth } from "../context/useAuth";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner"; // Cambié a `sonner`, ya que `shadcn` recomienda esto
+import { toast } from "sonner";
+import { getUserRoleFromToken } from "../utils/getUserFromToken"; // Ajusta la ruta según tu estructura de carpetas
+
 
 // Esquema de validación con Zod
 const loginSchema = z.object({
@@ -36,11 +38,23 @@ const Login: FC = () => {
                     login();
                     RestApiService.getInstance().setBackendToken(data.access_token);
                     toast.success("Inicio de sesión exitoso");
+                    console.log("Token de autenticación:", data.access_token);
 
                     // Guardar el token en localStorage
                     localStorage.setItem("access_token", data.access_token);
 
-                    setTimeout(() => navigate("/homeAdmin"), 1000);
+                    // Usar la función getUserRoleFromToken para obtener el rol
+                    const userRole = getUserRoleFromToken();
+                    console.log('Role del usuario:', userRole);
+
+                    // Redirigir según el rol
+                    if (userRole === 1 || userRole === 2) {
+                        setTimeout(() => navigate("/homeAdmin"), 1000);
+                    } else if (userRole === 3 || userRole === 4) {
+                        setTimeout(() => navigate("/home"), 1000);
+                    } else {
+                        toast.error("Rol no autorizado.");
+                    }
                 } else {
                     toast.error("No se recibió un token de autenticación.");
                 }
@@ -55,6 +69,8 @@ const Login: FC = () => {
             },
         });
     };
+
+
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">

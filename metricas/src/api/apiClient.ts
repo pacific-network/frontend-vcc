@@ -39,9 +39,9 @@ const apiClient = axios.create({
 
 // Interceptor para agregar tokens automáticamente (si usas autenticación)
 apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem("token"); // Obtén el token del almacenamiento local
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const access_token = localStorage.getItem("access_toke"); // Obtén el token del almacenamiento local
+    if (access_token) {
+        config.headers.Authorization = `Bearer ${access_token}`;
     }
 
     // Ajustar Content-Type dinámicamente si se envía un FormData
