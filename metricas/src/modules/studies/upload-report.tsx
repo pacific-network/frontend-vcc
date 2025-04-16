@@ -6,6 +6,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Button } from "@/components/ui/button";
 import FileUploadDialog from '../../modules/reports/upload-file';
 import { useQueryGetStudiesById } from '@/queries/studyQueries';
+import { toast } from 'sonner';
 
 const UploadFile: React.FC = () => {
     const location = useLocation();
@@ -13,6 +14,7 @@ const UploadFile: React.FC = () => {
     const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
 
     const { data, isLoading } = useQueryGetStudiesById(studyId);
+
 
     if (isLoading) {
         return <div>Cargando datos...</div>;
@@ -95,3 +97,4 @@ const UploadFile: React.FC = () => {
 };
 
 export default UploadFile;
+
