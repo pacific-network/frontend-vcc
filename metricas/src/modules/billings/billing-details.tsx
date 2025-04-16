@@ -13,7 +13,6 @@ const DetailBilling: FC = () => {
 
     const { data } = useQueryDetailBillingById(studyId);
     const { data: remaining } = useQueryRemainingBilling(studyId);
-    console.log("remaining", remaining);
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('es-CL').format(value);
     };

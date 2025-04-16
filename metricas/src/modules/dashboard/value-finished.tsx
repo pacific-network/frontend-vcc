@@ -21,8 +21,6 @@ const ValueFinished = () => {
     const { data } = useQueryGetTotalPrices(currentPage, pageSize, searchQuery);
     const totalPages = data?.meta?.pageCount || 1;
 
-    console.log("Price:", data);
-
     // Función para cambiar de página
     const goToPage = (page: number) => {
         if (page > 0 && page <= totalPages) {

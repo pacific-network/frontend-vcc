@@ -1,37 +1,67 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import FileUploadDialog from '../../modules/reports/upload-file';
 import { useQueryGetStudiesById } from '@/queries/studyQueries';
-import { toast } from 'sonner';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
 
 const UploadFile: React.FC = () => {
     const location = useLocation();
     const studyId = location.state?.studyId || null;
     const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
+    const [showFinalizadasAlert, setShowFinalizadasAlert] = useState(false);
 
     const { data, isLoading } = useQueryGetStudiesById(studyId);
 
-
-    if (isLoading) {
-        return <div>Cargando datos...</div>;
-    }
-
-    if (!data) {
-        return <div>Error al cargar los datos.</div>;
-    }
-
-    const { client, files } = data;
-
-    const latestFile = files.length > 0
-        ? files.reduce((latest, current) => new Date(current.date) > new Date(latest.date) ? current : latest, files[0])
+    const latestFile = data?.files?.length > 0
+        ? data.files.reduce((latest, current) =>
+            new Date(current.date) > new Date(latest.date) ? current : latest, data.files[0])
         : null;
 
+    useEffect(() => {
+        if (latestFile?.data?.length > 0 && data?.quantity) {
+            const lastRow = latestFile.data[latestFile.data.length - 1];
+            const finalizadas = parseInt(lastRow?.Finalizadas || '0', 10);
+            const quantity = data.quantity;
+
+            if (finalizadas === quantity) {
+                setShowFinalizadasAlert(true);
+            }
+        }
+    }, [latestFile, data?.quantity]);
+
+    if (isLoading) return <div>Cargando datos...</div>;
+    if (!data) return <div>Error al cargar los datos.</div>;
+
+    const { client } = data;
+
     return (
-        <div className='mt-10'>
+        <div className="mt-10">
+            <AlertDialog open={showFinalizadasAlert} onOpenChange={setShowFinalizadasAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>¡Cuota de estudios alcanzanda!</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Se ha completado la totalidad de llamadas asignadas para este estudio.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction onClick={() => setShowFinalizadasAlert(false)}>Aceptar</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             {latestFile ? (
                 <Card>
                     <CardHeader>
@@ -48,30 +78,30 @@ const UploadFile: React.FC = () => {
                                     <TableHead>Rechazadas</TableHead>
                                     <TableHead>Finalizadas</TableHead>
                                     <TableHead>Tiempo efectivo</TableHead>
-                                    {/* <TableHead>Código estudio</TableHead> */}
                                     <TableHead>Tiempo de conexión</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {latestFile?.data?.map((row: { [key: string]: any }, index: number) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{row.Fecha || '-'}</TableCell>
-                                        <TableCell>{row.Login || '-'}</TableCell>
-                                        <TableCell>{row.Nombre || '-'}</TableCell>
-                                        <TableCell>{row.Usuario || '-'}</TableCell>
-                                        <TableCell>{row.Rechazadas || '-'}</TableCell>
-                                        <TableCell>{row.Finalizadas || '-'}</TableCell>
-                                        <TableCell>{row['Tiempo efectivo'] || '-'}</TableCell>
-                                        {/* <TableCell>{row['Código estudio'] || '-'}</TableCell> */}
-                                        <TableCell>{row['Tiempo de conexión'] || '-'}</TableCell>
-                                    </TableRow>
-                                )) || (
-                                        <TableRow>
-                                            <TableCell colSpan={9} className="text-center">
-                                                No hay datos disponibles.
-                                            </TableCell>
+                                {latestFile.data && latestFile.data.length > 0 ? (
+                                    latestFile.data.map((row: { [key: string]: any }, index: number) => (
+                                        <TableRow key={index}>
+                                            <TableCell>{row.Fecha || '-'}</TableCell>
+                                            <TableCell>{row.Login || '-'}</TableCell>
+                                            <TableCell>{row.Nombre || '-'}</TableCell>
+                                            <TableCell>{row.Usuario || '-'}</TableCell>
+                                            <TableCell>{row.Rechazadas || '-'}</TableCell>
+                                            <TableCell>{row.Finalizadas || '-'}</TableCell>
+                                            <TableCell>{row['Tiempo efectivo'] || '-'}</TableCell>
+                                            <TableCell>{row['Tiempo de conexión'] || '-'}</TableCell>
                                         </TableRow>
-                                    )}
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={8} className="text-center">
+                                            No hay datos disponibles.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
                             </TableBody>
                         </Table>
 
@@ -84,17 +114,22 @@ const UploadFile: React.FC = () => {
                 <div className="mt-6">
                     <Card className="p-3">
                         <CardContent>No hay archivos disponibles para este estudio.</CardContent>
-                        <Button onClick={() => setOpenFileUploadDialog(true)} className="mt-4">Subir Reporte</Button>
+                        <Button onClick={() => setOpenFileUploadDialog(true)} className="mt-4">
+                            Subir Reporte
+                        </Button>
                     </Card>
                 </div>
             )}
 
             {openFileUploadDialog && (
-                <FileUploadDialog onClose={() => setOpenFileUploadDialog(false)} studyId={studyId} client={client} />
+                <FileUploadDialog
+                    onClose={() => setOpenFileUploadDialog(false)}
+                    studyId={studyId}
+                    client={client}
+                />
             )}
         </div>
     );
 };
 
 export default UploadFile;
-
