@@ -38,14 +38,13 @@ const Login: FC = () => {
                     login();
                     RestApiService.getInstance().setBackendToken(data.access_token);
                     toast.success("Inicio de sesión exitoso");
-                    console.log("Token de autenticación:", data.access_token);
+
 
                     // Guardar el token en localStorage
                     localStorage.setItem("access_token", data.access_token);
 
                     // Usar la función getUserRoleFromToken para obtener el rol
                     const userRole = getUserRoleFromToken();
-                    console.log('Role del usuario:', userRole);
 
                     // Redirigir según el rol
                     if (userRole === 1 || userRole === 2) {
