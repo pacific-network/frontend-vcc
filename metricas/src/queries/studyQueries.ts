@@ -73,7 +73,7 @@ export const useMutationUpdateStudyById = () => {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: async (studyData: updateStudy) => {
-            const res = await studyService.updateStudyById(studyData.id, studyData); // Pasar studyId y los datos
+            const res = await studyService.updateStudyById(Number(studyData.id), studyData); // Convertir studyData.id a número
             if (res.status === 200) {
                 return res.data;
             }

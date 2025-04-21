@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import {
     useQueryGetProgressStages,
@@ -9,6 +8,21 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ConfirmCompleted from "./confirm-completed";
+import { useEffect, useState } from "react";
+
+interface Observation {
+    fecha: string;
+    mensaje: string;
+}
+
+interface FormData {
+    quantity: number | string;
+    observaciones: Observation[];
+    progress_stage_id: number | string;
+    newObservation: string;
+}
+
+
 
 const DetailStudy: React.FC = () => {
     const location = useLocation();
@@ -18,7 +32,7 @@ const DetailStudy: React.FC = () => {
     const mutation = useMutationUpdateStudyById();
     const { data: dataProgress } = useQueryGetProgressStages();
 
-    const statusTranslations = {
+    const statusTranslations: Record<string, string> = {
         canceled: "Cancelado",
         completed: "Completado",
         in_process: "En proceso",
@@ -26,13 +40,15 @@ const DetailStudy: React.FC = () => {
         pending: "Pendiente"
     };
 
-    const translatedDataProgress =
-        dataProgress?.map((stage) => ({
+    // Asegúrate de que dataProgress sea un array
+    const translatedDataProgress = Array.isArray(dataProgress)
+        ? dataProgress.map((stage: { id: number; name: string }) => ({
             id: stage.id,
             name: statusTranslations[stage.name] || stage.name
-        })) || [];
+        }))
+        : [];
 
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<FormData>({
         quantity: "",
         observaciones: [],
         progress_stage_id: "",
@@ -54,10 +70,15 @@ const DetailStudy: React.FC = () => {
 
     const handleUpdateStudy = async () => {
         try {
+            // Asegurarse de que progress_stage_id sea un número
+            const progressStageId = typeof formData.progress_stage_id === "string"
+                ? parseInt(formData.progress_stage_id)
+                : formData.progress_stage_id;
+
             await mutation.mutateAsync({
                 id: studyId,
                 quantity: formData.quantity,
-                progress_stage_id: formData.progress_stage_id,
+                progress_stage_id: progressStageId,
                 observaciones: formData.observaciones
             });
             toast("Actualización exitosa");
@@ -129,7 +150,7 @@ const DetailStudy: React.FC = () => {
                                         <CardContent>
                                             <ul className="mt-3 list-disc list-inside">
                                                 {files.length > 0 ? (
-                                                    files.map((file, index) => (
+                                                    files.map((file: any, index: number) => (
                                                         <li key={index}>
                                                             {file.date ? new Date(file.date).toLocaleDateString() : "-"} -{" "}
                                                             {file.code || "Sin nombre"}
@@ -206,12 +227,13 @@ const DetailStudy: React.FC = () => {
                                     <select
                                         value={formData.progress_stage_id}
                                         onChange={(e) => {
+                                            const selectedId = parseInt(e.target.value);
                                             const selectedStage = translatedDataProgress.find(
-                                                (stage) => stage.id === parseInt(e.target.value)
+                                                (stage: { id: number; name: string }) => stage.id === selectedId
                                             );
                                             setFormData({
                                                 ...formData,
-                                                progress_stage_id: selectedStage?.id || ""
+                                                progress_stage_id: selectedId
                                             });
 
                                             if (selectedStage?.name === "Completado") {
