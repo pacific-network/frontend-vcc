@@ -18,7 +18,7 @@ export const useMutationLogin = () => {
         mutationFn: async ({ username, password }) => {
             const res = await authService.login(username, password);
             if (res.status === 200) {
-                return res.data;
+                return res.data as LoginResponse;
             } else if (res.status === 401) {
                 throw new Error("Nombre de usuario o contraseña incorrecta");
             } else {

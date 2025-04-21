@@ -12,7 +12,7 @@ interface UpdateUserProps {
 }
 
 const UpdateUser: FC<UpdateUserProps> = ({ userId, onUserUpdated, isOpen, setIsOpen }) => {
-    const { data, isLoading } = useQueryGetUserById(userId);
+    const { data } = useQueryGetUserById(userId);
     const mutation = useMutationUpdateUser();
     const [formData, setFormData] = useState({
         username: "",
@@ -39,7 +39,12 @@ const UpdateUser: FC<UpdateUserProps> = ({ userId, onUserUpdated, isOpen, setIsO
 
     const handleSubmit = () => {
         mutation.mutate(
-            { id: userId, ...formData },
+            {
+                id: userId, ...formData,
+                password: "",
+                name: "",
+                lastname: ""
+            },
             {
                 onSuccess: () => {
                     onUserUpdated();

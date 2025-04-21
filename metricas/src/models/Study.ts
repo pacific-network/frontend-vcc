@@ -9,6 +9,9 @@ export interface CreateStudyDto {
     observation: [];
     progress_stage: [];
     price: string;
+    progress_stage_id: number;
+    is_complete: boolean;
+    completed_at: string;
 }
 
 export interface IStudy {
