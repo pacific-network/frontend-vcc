@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
 
 const UploadFile: React.FC = () => {
     const location = useLocation();
+    const navigate = useNavigate(); // Inicializamos el hook de navegación
     const studyId = location.state?.studyId || null;
     const [openFileUploadDialog, setOpenFileUploadDialog] = useState(false);
     const [showFinalizadasAlert, setShowFinalizadasAlert] = useState(false);
@@ -48,12 +49,17 @@ const UploadFile: React.FC = () => {
 
     const { client } = data;
 
+    // Función para redirigir a la ruta de detalle de facturación
+    const handleGoToBilling = () => {
+        navigate('/detail-billing', { state: { studyId } });
+    };
+
     return (
         <div className="mt-10">
             <AlertDialog open={showFinalizadasAlert} onOpenChange={setShowFinalizadasAlert}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
-                        <AlertDialogTitle>¡Cuota de estudios alcanzanda!</AlertDialogTitle>
+                        <AlertDialogTitle>¡Cuota de estudios alcanzada!</AlertDialogTitle>
                         <AlertDialogDescription>
                             Se ha completado la totalidad de llamadas asignadas para este estudio.
                         </AlertDialogDescription>
@@ -109,6 +115,10 @@ const UploadFile: React.FC = () => {
 
                         <Button className="mt-8" type="button" onClick={() => setOpenFileUploadDialog(true)}>
                             Cargar Reporte
+                        </Button>
+                        {/* Botón para ir a detalle de facturación */}
+                        <Button variant="secondary" className="mt-4 ml-4" onClick={handleGoToBilling}>
+                            Ver Detalle de Facturación
                         </Button>
                     </CardContent>
                 </Card>
