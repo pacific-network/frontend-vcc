@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
+import { baseUrl } from '@/constants/roles';
 
-const baseUrl = 'http://localhost:3000/v1/';
+
 
 export class RestApiService {
     public http: AxiosInstance;
