@@ -1,7 +1,8 @@
 import { getUserRoleFromToken } from "../utils/getUserFromToken";
 import {
     Home, BarChart2, BookPlus, Settings, User2, ChevronUp,
-    ChartBar, UserRoundCog, Handshake, LayoutDashboard,
+    ChartBar, UserRoundCog, Handshake, LayoutDashboard, UsersRound, ListChecks,
+    UserRoundPlus
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -18,7 +19,7 @@ import { useEffect, useState } from "react";
 // 👇 Diccionario de íconos
 const Icons: Record<string, any> = {
     Home, BarChart2, BookPlus, Settings, User2, ChevronUp,
-    ChartNoAxesCombined: ChartBar, UserRoundCog, Handshake, LayoutDashboard,
+    ChartNoAxesCombined: ChartBar, UserRoundCog, Handshake, LayoutDashboard, UsersRound, ListChecks, UserRoundPlus
 };
 
 // 👇 Menú con roles permitidos
@@ -40,6 +41,16 @@ const menuItems = [
             { title: "Crear Estudio", url: "/create-study", icon: "BookPlus", roles: [1, 2] },
             { title: "Estudios Activos", url: "/list", icon: "BarChart2", roles: [1, 2, 3] },
             { title: "Histórico Estudios", url: "/completed", icon: "BarChart2", roles: [1, 2, 3] }, // ícono corregido
+        ],
+    },
+    {
+        title: "Ejecutivos ",
+        icon: "UsersRound",
+        roles: [1, 2, 3],
+        subMenu: [
+            { title: "Nuevo Ejecutivo", url: "/create-study", icon: "UserRoundPlus", roles: [1, 2] },
+            { title: "Ver Ejecutivos", url: "/executive", icon: "ListChecks", roles: [1, 2, 3] },
+
         ],
     },
     {
