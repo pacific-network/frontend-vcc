@@ -1,10 +1,10 @@
 import { List } from "lucide-react";
 import DashboardCard from "../../components/dashboard-card";
-import { UseQueryGetStudies } from "@/queries/studyQueries";
+import { UseQueryGetStudiesActive } from "@/queries/studyQueries";
 
 const ActiveStudies = () => {
     // Llamamos a la query para obtener todos los estudios
-    const { data, isLoading, error } = UseQueryGetStudies(1, 10, "");
+    const { data, isLoading, error } = UseQueryGetStudiesActive(1, 10, "");
 
     // Filtramos solo los estudios con progress_stage.id === 1
     const filteredStudies = data?.data?.filter(study => study.progress_stage?.id === 1) || [];

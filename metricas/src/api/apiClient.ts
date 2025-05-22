@@ -1,22 +1,22 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:3000/v1", // Asegúrate de que la URL sea correcta
-    timeout: 10000, // Tiempo de espera en milisegundos
+    baseURL: "http://localhost:3000/v1", // URL base correcta
+    timeout: 10000, // Timeout en milisegundos
 });
 
-// Interceptor para agregar tokens automáticamente (si usas autenticación)
+// Interceptor para agregar tokens y manejar Content-Type
 apiClient.interceptors.request.use((config) => {
-    const access_token = localStorage.getItem("access_toke"); // Obtén el token del almacenamiento local
+    const access_token = localStorage.getItem("access_token"); // corregir typo
     if (access_token) {
         config.headers.Authorization = `Bearer ${access_token}`;
     }
 
-    // Ajustar Content-Type dinámicamente si se envía un FormData
-    if (config.data instanceof FormData) {
-        config.headers["Content-Type"] = "multipart/form-data";
-    } else {
+    // No establecer Content-Type para FormData para que axios lo gestione correctamente
+    if (!(config.data instanceof FormData)) {
         config.headers["Content-Type"] = "application/json";
+    } else {
+        delete config.headers["Content-Type"];
     }
 
     return config;
@@ -24,7 +24,7 @@ apiClient.interceptors.request.use((config) => {
 
 // Interceptor para manejo de respuestas y errores
 apiClient.interceptors.response.use(
-    (response) => response.data, // Devuelve solo los datos relevantes
+    (response) => response.data, // Devuelve solo datos relevantes
     (error) => {
         console.error("API Error:", error.response || error.message);
         return Promise.reject(error.response || error.message);

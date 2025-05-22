@@ -23,6 +23,13 @@ class StudyService {
         return this.restApiService.get<GetStudyWithPagination>(`/studies?page=${page}&take=${take}${searchParam}`);
     }
 
+    public async getStudiesActive(page: number, take: number, searchQuery: string) {
+        const searchParam = searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : "";
+        return this.restApiService.get<GetStudyWithPagination>(
+            `/studies/1/active?page=${page}&take=${take}${searchParam}`
+        );
+    }
+
     public async getStudyById(studyId: number) {
         return await this.restApiService.get<IStudy>(`studies/${studyId}`);
 

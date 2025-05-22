@@ -17,6 +17,7 @@ export enum QueryKeys {
     //Studies
     GET_ALL_STUDIES = 'GET_ALL_STUDIES',
     GET_STUDY_BY_ID = 'GET_STUDY_BY_ID',
+    GET_ALL_STUDIES_ACTIVE = 'GET_ALL_STUDIES_ACTIVE',
 
     //Progress Stages
     GET_PROGRESS_STAGES = 'GET_PROGRESS_STAGES',

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CustomHeader from '@/components/custom-header';
-import { UseQueryGetStudies } from '@/queries/studyQueries';
+import { UseQueryGetStudiesActive } from '@/queries/studyQueries'; // Asegúrate que sea este hook
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
@@ -11,7 +11,16 @@ const ListStudies: React.FC = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const { data: studiesData, isLoading } = UseQueryGetStudies(1, 10, searchTerm);
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+    const take = 10;
+
+    // Debounce search input
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearch(searchTerm), 500);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
+
+    const { data: studiesData, isLoading } = UseQueryGetStudiesActive(page, take, debouncedSearch);
 
     const statusTranslations: Record<string, string> = {
         "canceled": "Cancelado",
@@ -41,12 +50,7 @@ const ListStudies: React.FC = () => {
         navigate('/data-studies', { state: { studyId } });
     };
 
-    // Filtrar estudios por nombre o cliente y excluir progress_stage.id === 4
-    const filteredStudies = studiesData?.data?.filter(study =>
-        (study.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            study.client.toLowerCase().includes(searchTerm.toLowerCase())) &&
-        study.progress_stage?.id !== 4
-    ) || [];
+    const studies = studiesData?.data || [];
 
     return (
         <div className='size-full p-10'>
@@ -84,8 +88,8 @@ const ListStudies: React.FC = () => {
                                         Cargando...
                                     </TableCell>
                                 </TableRow>
-                            ) : filteredStudies.length > 0 ? (
-                                filteredStudies.map((study) => (
+                            ) : studies.length > 0 ? (
+                                studies.map((study) => (
                                     <TableRow key={study.id} className="border-b">
                                         <TableCell className="px-4 py-2">{study.id}</TableCell>
                                         <TableCell className="px-4 py-2">{study.name}</TableCell>
