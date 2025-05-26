@@ -10,19 +10,16 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import clsx from "clsx";
 
 const ValueFinished = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 3;
 
-    // Llamamos a la API con la página actual y el tamaño de página
     const { data } = useQueryGetTotalPrices(currentPage, pageSize);
     const totalPages = data?.meta?.pageCount || 1;
 
-    console.log("Price:", data);
-
-    // Función para cambiar de página
-    const goToPage = (page) => {
+    const goToPage = (page: number) => {
         if (page > 0 && page <= totalPages) {
             setCurrentPage(page);
         }
@@ -40,34 +37,45 @@ const ValueFinished = () => {
                 </ul>
             </div>
 
-            {/* Paginación */}
             <Pagination>
                 <PaginationContent>
+                    {/* Anterior */}
                     <PaginationItem>
                         <PaginationPrevious
                             href="#"
-                            onClick={() => goToPage(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) goToPage(currentPage - 1);
+                            }}
+                            className={clsx({ "pointer-events-none opacity-50": currentPage === 1 })}
                         />
                     </PaginationItem>
 
+                    {/* Páginas */}
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                         <PaginationItem key={page}>
                             <PaginationLink
                                 href="#"
                                 isActive={currentPage === page}
-                                onClick={() => goToPage(page)}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    goToPage(page);
+                                }}
                             >
                                 {page}
                             </PaginationLink>
                         </PaginationItem>
                     ))}
 
+                    {/* Siguiente */}
                     <PaginationItem>
                         <PaginationNext
                             href="#"
-                            onClick={() => goToPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < totalPages) goToPage(currentPage + 1);
+                            }}
+                            className={clsx({ "pointer-events-none opacity-50": currentPage === totalPages })}
                         />
                     </PaginationItem>
                 </PaginationContent>
