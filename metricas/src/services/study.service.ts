@@ -60,7 +60,7 @@ class StudyService {
             params.append("q", searchQuery); // Solo agrega `q` si hay un término de búsqueda
         }
 
-        return this.restApiService.get<PriceWithPagination>(`clients/current-month-price?${params.toString()}`);
+        return this.restApiService.get<PriceWithPagination>(`clients/price?${params.toString()}`);
     }
 
 }
