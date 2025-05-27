@@ -11,23 +11,42 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
+// 🔸 Tipos explícitos
+type Category = {
+    id: number;
+    name: string;
+};
+
+type FormData = {
+    name: string;
+    contactPhone: string;
+    contactEmail: string;
+    category_id: number;
+};
+
 const CreateClientForm: React.FC = () => {
     const [open, setOpen] = useState(false);
-    const { control, register, handleSubmit, reset } = useForm();
+    const { control, register, handleSubmit, reset } = useForm<FormData>();
     const { mutate } = useMutateCreateClient();
-    const { data: categories } = useQueryGetClientCategories();
+    const { data: categories = [] } = useQueryGetClientCategories() as { data: Category[] };
 
-    const onSubmit = (data) => {
+    const onSubmit = (data: FormData) => {
         mutate(
             { ...data, category_id: Number(data.category_id) },
             {
                 onSuccess: () => {
-                    reset(); // Limpiar formulario después de enviar
-                    setOpen(false); // Cerrar modal
+                    reset();
+                    setOpen(false);
                     toast("Cliente creado existosamente");
                 },
             }
@@ -68,7 +87,7 @@ const CreateClientForm: React.FC = () => {
                                         <SelectValue placeholder="Selecciona una categoría" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {categories?.map((category) => (
+                                        {categories.map((category: Category) => (
                                             <SelectItem key={category.id} value={category.id.toString()}>
                                                 {category.name}
                                             </SelectItem>

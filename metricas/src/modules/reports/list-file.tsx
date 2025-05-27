@@ -11,7 +11,7 @@ const ListStudies: React.FC = () => {
     const navigate = useNavigate();
     const [page, setPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const { data: studiesData, isLoading } = UseQueryGetStudies(page, 10);
+    const { data: studiesData, isLoading } = UseQueryGetStudies(1, 10, searchTerm);
 
     const statusTranslations: Record<string, string> = {
         "canceled": "Cancelado",

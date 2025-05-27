@@ -3,12 +3,14 @@ import { RestApiService } from "./restApi.service";
 
 export interface LoginResponse {
     access_token: string;
+    role: number;
     refresh_token?: string;
     user: {
         id: number;
         name: string;
     };
 }
+
 
 
 class AuthService {

@@ -1,6 +1,6 @@
 import { AxiosInstance } from "axios";
 import { RestApiService } from "./restApi.service";;
-import { CreateStudyDto, GetStudyWithPagination, IStudy, updateStudy, ProgressStage, PriceWithPagination } from "@/models/Study";
+import { CreateStudyDto, GetStudyWithPagination, IStudy, updateStudy, ProgressStage, PriceWithPagination, Observation } from "@/models/Study";
 
 class StudyService {
     restApiService: AxiosInstance;
@@ -27,10 +27,13 @@ class StudyService {
         return await this.restApiService.get<IStudy>(`studies/${studyId}`);
 
     }
-
-    public async updateStudyById(id: number, studyData: { observaciones: []; progress_stage_id: number }) {
+    public async updateStudyById(id: number, studyData: { observaciones: Observation[]; progress_stage_id: number }) {
         return await this.restApiService.patch<updateStudy>(`studies/${id}`, studyData);
     }
+
+    // public async updateStudyById(id: number, studyData: { observaciones: []; progress_stage_id: number }) {
+    //     return await this.restApiService.patch<updateStudy>(`studies/${id}`, studyData);
+    // }
 
     public async getProgressStages() {
         return this.restApiService.get<ProgressStage>('clients/progress');

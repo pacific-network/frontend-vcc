@@ -14,14 +14,12 @@ import { Input } from "@/components/ui/input";
 
 const ValueFinished = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [searchQuery, setSearchQuery] = useState(""); // Estado para la búsqueda
+    const [searchQuery, setSearchQuery] = useState("");
     const pageSize = 3;
 
-    // Llamamos a la API con la página actual, tamaño de página y búsqueda
     const { data } = useQueryGetTotalPrices(currentPage, pageSize, searchQuery);
     const totalPages = data?.meta?.pageCount || 1;
 
-    // Función para cambiar de página
     const goToPage = (page: number) => {
         if (page > 0 && page <= totalPages) {
             setCurrentPage(page);
@@ -29,8 +27,10 @@ const ValueFinished = () => {
     };
 
     return (
-        <DashboardCard title="Valor Estudio (Ultimo Reporte)" icon={<Wallet className="w-6 h-6 text-blue-600" />}>
-            {/* Input de búsqueda */}
+        <DashboardCard
+            title="Valor Estudio (Ultimo Reporte)"
+            icon={<Wallet className="w-6 h-6 text-blue-600" />}
+        >
             <div className="mb-4">
                 <Input
                     type="text"
@@ -38,17 +38,16 @@ const ValueFinished = () => {
                     value={searchQuery}
                     onChange={(e) => {
                         setSearchQuery(e.target.value);
-                        setCurrentPage(1); // Reiniciar paginación en búsqueda nueva
+                        setCurrentPage(1);
                     }}
                 />
             </div>
 
-            {/* Lista de estudios */}
             <div>
                 {data?.data?.length === 0 ? (
                     <p>No se encontraron estudios.</p>
                 ) : (
-                    <ul>
+                    <ul className="space-y-2">
                         {data?.data?.map((study) => (
                             <li key={study.id}>
                                 <strong>{study.name}:</strong> ${study.totalPrice}
@@ -58,14 +57,17 @@ const ValueFinished = () => {
                 )}
             </div>
 
-            {/* Paginación */}
             <Pagination>
                 <PaginationContent>
                     <PaginationItem>
                         <PaginationPrevious
                             href="#"
-                            onClick={() => goToPage(currentPage - 1)}
-                            disabled={currentPage === 1}
+                            aria-disabled={currentPage === 1}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage > 1) goToPage(currentPage - 1);
+                            }}
                         />
                     </PaginationItem>
 
@@ -74,7 +76,10 @@ const ValueFinished = () => {
                             <PaginationLink
                                 href="#"
                                 isActive={currentPage === page}
-                                onClick={() => goToPage(page)}
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    goToPage(page);
+                                }}
                             >
                                 {page}
                             </PaginationLink>
@@ -84,8 +89,12 @@ const ValueFinished = () => {
                     <PaginationItem>
                         <PaginationNext
                             href="#"
-                            onClick={() => goToPage(currentPage + 1)}
-                            disabled={currentPage === totalPages}
+                            aria-disabled={currentPage === totalPages}
+                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                if (currentPage < totalPages) goToPage(currentPage + 1);
+                            }}
                         />
                     </PaginationItem>
                 </PaginationContent>

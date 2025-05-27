@@ -14,7 +14,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 
 const UploadFile: React.FC = () => {
     const location = useLocation();
@@ -24,12 +24,14 @@ const UploadFile: React.FC = () => {
 
     const { data, isLoading } = useQueryGetStudiesById(studyId);
 
-    const latestFile = data?.files?.length > 0
+    // Validar que `data` y `data.files` existan antes de proceder
+    const latestFile = data?.files && data.files.length > 0
         ? data.files.reduce((latest, current) =>
             new Date(current.date) > new Date(latest.date) ? current : latest, data.files[0])
         : null;
 
     useEffect(() => {
+        // Verificamos si `latestFile` y `data` son válidos antes de proceder
         if (latestFile?.data?.length > 0 && data?.quantity) {
             const lastRow = latestFile.data[latestFile.data.length - 1];
             const finalizadas = parseInt(lastRow?.Finalizadas || '0', 10);

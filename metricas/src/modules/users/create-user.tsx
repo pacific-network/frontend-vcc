@@ -44,7 +44,7 @@ const UserForm: React.FC = () => {
         }
     });
 
-    const { mutate, isLoading } = useMutationCreateUser(); // isLoading para el estado de la mutación
+    const { mutate } = useMutationCreateUser(); // isLoading para el estado de la mutación
 
     // Manejo del envío del formulario
     const onSubmit = (data: any) => {
@@ -109,7 +109,10 @@ const UserForm: React.FC = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="1">Admin</SelectItem>
-                                        <SelectItem value="2">Usuario</SelectItem>
+                                        <SelectItem value="2">Jefatura</SelectItem>
+                                        <SelectItem value="3">Supervisor</SelectItem>
+                                        <SelectItem value="4" disabled>Ejecutivo</SelectItem>
+
                                     </SelectContent>
                                 </Select>
                             )}
@@ -128,7 +131,7 @@ const UserForm: React.FC = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="1">Activo</SelectItem>
-                                        <SelectItem value="2">Inactivo</SelectItem>
+                                        <SelectItem value="2" disabled>Inactivo</SelectItem>
                                     </SelectContent>
                                 </Select>
                             )}
@@ -136,8 +139,8 @@ const UserForm: React.FC = () => {
                         {errors.status_id && <p className="text-red-500 text-sm">{errors.status_id.message}</p>}
                     </div>
                     <div className="col-span-2 flex justify-end">
-                        <Button type="submit" disabled={isLoading}>
-                            {isLoading ? 'Creando...' : 'Crear Usuario'}
+                        <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
+                            {'Crear Usuario'}
                         </Button>
                     </div>
                 </form>

@@ -8,7 +8,9 @@ import FileUpload from '../modules/reports/upload-file';
 const Report: React.FC = () => {
     return (
         <Layout>
-            <FileUpload />
+            <FileUpload onClose={function (): void {
+                throw new Error('Function not implemented.');
+            }} studyId={0} client={''} />
         </Layout>
     );
 }

@@ -37,7 +37,6 @@ const DeleteUser: FC<DeleteUserProps> = ({ userId, onUserDeleted, isOpen, setIsO
             title="Eliminar Usuario"
             description="¿Estás seguro de que deseas eliminar este usuario? Esta acción no se puede deshacer."
             onConfirm={handleConfirmDelete}  // Llama a handleConfirmDelete cuando se confirme
-            triggerLabel="Eliminar"
             confirmLabel="Eliminar"
             cancelLabel="Cancelar"
             variant="destructive"
