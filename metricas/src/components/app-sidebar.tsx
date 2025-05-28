@@ -47,6 +47,7 @@ const menuItems = [
         title: "Ejecutivos ",
         icon: "UsersRound",
         roles: [1, 2, 3],
+        disabled: true,
         subMenu: [
             { title: "Nuevo Ejecutivo", url: "/create-study", icon: "UserRoundPlus", roles: [1, 2] },
             { title: "Ver Ejecutivos", url: "/executive", icon: "ListChecks", roles: [1, 2, 3] },
@@ -93,36 +94,44 @@ export function AppSidebar() {
                                 .filter((item) => item.roles.includes(userRole))
                                 .map((item) => {
                                     const Icon = Icons[item.icon];
+                                    const isDisabled = item.disabled;
+
                                     return (
-                                        <Collapsible key={item.title} defaultOpen className="group/collapsible">
+                                        <Collapsible key={item.title} defaultOpen={!isDisabled} className="group/collapsible">
                                             <SidebarMenuItem>
                                                 <CollapsibleTrigger asChild>
-                                                    <SidebarMenuButton className="w-full flex items-center p-3 text-sm hover:bg-blue-100">
+                                                    <SidebarMenuButton
+                                                        className={`w-full flex items-center p-3 text-sm ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-100'
+                                                            }`}
+                                                        disabled={isDisabled}
+                                                    >
                                                         <Icon className="w-5 h-5 mr-3" />
                                                         <span>{item.title}</span>
                                                     </SidebarMenuButton>
                                                 </CollapsibleTrigger>
-                                                <CollapsibleContent>
-                                                    {item.subMenu && (
-                                                        <SidebarMenuSub>
-                                                            {item.subMenu
-                                                                .filter((sub) => sub.roles.includes(userRole))
-                                                                .map((subItem) => {
-                                                                    const SubIcon = Icons[subItem.icon];
-                                                                    return (
-                                                                        <SidebarMenuSubItem key={subItem.title}>
-                                                                            <SidebarMenuButton asChild className="w-full flex items-center p-3 text-sm text hover:bg-blue-100">
-                                                                                <Link to={subItem.url} className="flex items-center w-full">
-                                                                                    <SubIcon className="w-5 h-5 mr-3" />
-                                                                                    <span>{subItem.title}</span>
-                                                                                </Link>
-                                                                            </SidebarMenuButton>
-                                                                        </SidebarMenuSubItem>
-                                                                    );
-                                                                })}
-                                                        </SidebarMenuSub>
-                                                    )}
-                                                </CollapsibleContent>
+                                                {!isDisabled && (
+                                                    <CollapsibleContent>
+                                                        {item.subMenu && (
+                                                            <SidebarMenuSub>
+                                                                {item.subMenu
+                                                                    .filter((sub) => sub.roles.includes(userRole))
+                                                                    .map((subItem) => {
+                                                                        const SubIcon = Icons[subItem.icon];
+                                                                        return (
+                                                                            <SidebarMenuSubItem key={subItem.title}>
+                                                                                <SidebarMenuButton asChild className="w-full flex items-center p-3 text-sm hover:bg-blue-100">
+                                                                                    <Link to={subItem.url} className="flex items-center w-full">
+                                                                                        <SubIcon className="w-5 h-5 mr-3" />
+                                                                                        <span>{subItem.title}</span>
+                                                                                    </Link>
+                                                                                </SidebarMenuButton>
+                                                                            </SidebarMenuSubItem>
+                                                                        );
+                                                                    })}
+                                                            </SidebarMenuSub>
+                                                        )}
+                                                    </CollapsibleContent>
+                                                )}
                                             </SidebarMenuItem>
                                         </Collapsible>
                                     );
