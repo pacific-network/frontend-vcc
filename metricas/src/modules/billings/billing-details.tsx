@@ -63,9 +63,9 @@ const DetailBilling: FC = () => {
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
-                                <span>Cuota Estudio</span>
+                                <span>Precio Unitario </span>
                                 <span className="text-xl font-bold text-blue-600">
-                                    {remaining?.[0]?.pricePerCall ?? "Completada"}
+                                    {remaining?.pricePerCall}
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
