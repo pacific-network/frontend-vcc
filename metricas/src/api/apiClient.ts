@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-    baseURL: "http://localhost:3000/v1", // URL base correcta
-    timeout: 10000, // Timeout en milisegundos
+    baseURL: import.meta.env.VITE_API_BASE_URL,
+    timeout: 10000,
 });
 
 // Interceptor para agregar tokens y manejar Content-Type

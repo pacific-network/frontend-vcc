@@ -13,6 +13,7 @@ const DetailBilling: FC = () => {
 
     const { data } = useQueryDetailBillingById(studyId);
     const { data: remaining } = useQueryRemainingBilling(studyId);
+    console.log(remaining);
     const formatCurrency = (value: number) => {
         return new Intl.NumberFormat('es-CL').format(value);
     };
@@ -57,7 +58,8 @@ const DetailBilling: FC = () => {
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
                                 <span>Total Llamadas Restantes</span>
                                 <span className="text-xl font-bold text-blue-600">
-                                    {remaining?.[0]?.remainingCalls ?? "0"}
+                                    {remaining?.remainingCalls ?? "0"}
+
                                 </span>
                             </div>
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
@@ -69,8 +71,8 @@ const DetailBilling: FC = () => {
                             <div className="flex flex-col items-center justify-center p-4 border border-gray-200 rounded-lg shadow-sm">
                                 <span>Monto Total Llamadas Restantes</span>
                                 <span className="text-xl font-bold text-blue-600">
-                                    {remaining?.[0]?.amount !== undefined
-                                        ? formatCurrency(remaining[0].amount)
+                                    {remaining?.remainingCalls !== undefined && remaining?.pricePerCall !== undefined
+                                        ? formatCurrency(remaining.remainingCalls * remaining.pricePerCall)
                                         : "Sin Monto"}
                                 </span>
                             </div>

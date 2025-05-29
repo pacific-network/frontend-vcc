@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 
-const baseUrl = 'http://localhost:3000/v1/';
-// const baseUrl = 'http://localhost:3000/v1/'; cambiar en prod
+// const baseUrl = 'http://localhost:3000/v1/';
+const baseUrl = 'http://172.25.100.52:3000/v1/';
 
 export class RestApiService {
     public http: AxiosInstance;
